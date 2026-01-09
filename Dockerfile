@@ -172,12 +172,20 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
+# MySQL C 依赖（mysqlclient 必须）
+RUN /app/docker/apt-install.sh default-libmysqlclient-dev
+
 COPY requirements/base.txt requirements/
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     /app/docker/pip-install.sh --requires-build-essential -r requirements/base.txt
 
+# 安装 Superset 本体
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install .
+
+# 安装 MySQL driver（关键）
+RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
+    uv pip install mysqlclient
 
 RUN python -m compileall /app/superset
 USER superset
