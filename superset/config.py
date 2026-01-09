@@ -195,7 +195,7 @@ SECRET_KEY = os.environ.get("SUPERSET_SECRET_KEY") or CHANGE_ME_SECRET_KEY
 #    f"""sqlite:///{os.path.join(DATA_DIR, "superset.db")}?check_same_thread=false"""
 #)
 
-SQLALCHEMY_DATABASE_URI = 'mysql://<UserName>:<DBPassword>@<Database Host>/<Database Name>'
+#SQLALCHEMY_DATABASE_URI = 'mysql://<UserName>:<DBPassword>@<Database Host>/<Database Name>'
 # SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
 
 # This config is exposed through flask-sqlalchemy, and can be used to set your metadata
