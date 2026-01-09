@@ -172,6 +172,7 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
+<<<<<<< HEAD
 # 安装 MySQL 客户端编译所需的依赖
 RUN /app/docker/apt-install.sh \
     pkg-config \
@@ -181,16 +182,21 @@ RUN /app/docker/apt-install.sh \
     libffi-dev \
     python3-dev \
     libmariadb-dev
+=======
+# 必须的系统编译依赖（重点）
+RUN /app/docker/apt-install.sh \
+    pkg-config \
+    default-libmysqlclient-dev \
+    build-essential
+>>>>>>> 533743ca18219fe9dcf6170b06b75e70ce1bc0da
 
 COPY requirements/base.txt requirements/
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     /app/docker/pip-install.sh -r requirements/base.txt
 
-# 安装 Superset 本体
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install .
 
-# 安装 MySQL driver（关键）
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install mysqlclient
 
