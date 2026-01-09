@@ -172,7 +172,10 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
-# MySQL C 依赖（mysqlclient 必须）
+# 安装 MySQL 客户端编译所需的依赖
+RUN /app/docker/apt-install.sh pkg-config libmysqlclient-dev
+
+# 继续安装其他依赖
 RUN /app/docker/apt-install.sh default-libmysqlclient-dev
 
 COPY requirements/base.txt requirements/
