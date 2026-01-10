@@ -317,7 +317,7 @@ APP_ICON = "/static/assets/images/alpha-log.png"
 # Default value of None will take you to '/superset/welcome'
 # You can also specify a relative URL e.g. '/superset/welcome' or '/dashboards/list'
 # or you can specify a full URL e.g. 'https://foo.bar'
-LOGO_TARGET_PATH = "/dashboards/list"
+LOGO_TARGET_PATH = None
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
 LOGO_TOOLTIP = "供应链数据分析"
