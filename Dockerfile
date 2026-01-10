@@ -143,7 +143,7 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
         [ "$INCLUDE_FIREFOX" = "true" ] && playwright install firefox || true; \
     fi
 
-COPY setup.py  ./
+COPY pyproject.toml setup.py MANIFEST.in ./
 COPY superset-frontend/package.json superset-frontend/
 COPY scripts/check-env.py scripts/
 COPY --chmod=755 docker/entrypoints/run-server.sh /usr/bin/
