@@ -323,7 +323,7 @@ LOGO_TARGET_PATH = None
 LOGO_TOOLTIP = "供应链数据分析"
 
 # Specify any text that should appear to the right of the logo
-LOGO_RIGHT_TEXT = "v5.0.0"
+LOGO_RIGHT_TEXT: Callable[[], str] | str = ""
 
 # Enables SWAGGER UI for superset openapi spec
 # ex: http://localhost:8080/swagger/v1
