@@ -317,13 +317,13 @@ APP_ICON = "/static/assets/images/alpha-log.png"
 # Default value of None will take you to '/superset/welcome'
 # You can also specify a relative URL e.g. '/superset/welcome' or '/dashboards/list'
 # or you can specify a full URL e.g. 'https://foo.bar'
-LOGO_TARGET_PATH = "/alpha/welcome"
+LOGO_TARGET_PATH = "/dashboards/list"
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
-LOGO_TOOLTIP = ""
+LOGO_TOOLTIP = "供应链数据分析"
 
 # Specify any text that should appear to the right of the logo
-LOGO_RIGHT_TEXT: Callable[[], str] | str = ""
+LOGO_RIGHT_TEXT = "v5.0.0"
 
 # Enables SWAGGER UI for superset openapi spec
 # ex: http://localhost:8080/swagger/v1
