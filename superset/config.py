@@ -317,7 +317,7 @@ APP_ICON = "/static/assets/images/superset-logo-horiz.png"
 # Default value of None will take you to '/superset/welcome'
 # You can also specify a relative URL e.g. '/superset/welcome' or '/dashboards/list'
 # or you can specify a full URL e.g. 'https://foo.bar'
-LOGO_TARGET_PATH = None
+LOGO_TARGET_PATH = "/alpha/welcome"
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
 LOGO_TOOLTIP = ""
