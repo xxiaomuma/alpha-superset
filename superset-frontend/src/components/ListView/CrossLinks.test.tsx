@@ -70,7 +70,7 @@ test('should render the link with just one item', () => {
   expect(screen.getByText('Test dashboard')).toBeInTheDocument();
   expect(screen.getByRole('link')).toHaveAttribute(
     'href',
-    `/superset/dashboard/1`,
+    `/alpha/dashboard/1`,
   );
 });
 

@@ -86,7 +86,7 @@ const DashboardsSubMenu = ({
             <Link
               target="_blank"
               rel="noreferer noopener"
-              to={`/superset/dashboard/${dashboard.id}${urlQueryString}`}
+              to={`/alpha/dashboard/${dashboard.id}${urlQueryString}`}
             >
               <div
                 css={css`

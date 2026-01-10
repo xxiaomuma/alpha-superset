@@ -19,11 +19,11 @@
 
 export const DASHBOARD_LIST = '/dashboard/list/';
 export const CHART_LIST = '/chart/list/';
-export const WORLD_HEALTH_DASHBOARD = '/superset/dashboard/world_health/';
-export const SAMPLE_DASHBOARD_1 = '/superset/dashboard/1-sample-dashboard/';
+export const WORLD_HEALTH_DASHBOARD = '/alpha/dashboard/world_health/';
+export const SAMPLE_DASHBOARD_1 = '/alpha/dashboard/1-sample-dashboard/';
 export const SUPPORTED_CHARTS_DASHBOARD =
-  '/superset/dashboard/supported_charts_dash/';
-export const TABBED_DASHBOARD = '/superset/dashboard/tabbed_dash/';
+  '/alpha/dashboard/supported_charts_dash/';
+export const TABBED_DASHBOARD = '/alpha/dashboard/tabbed_dash/';
 export const DATABASE_LIST = '/databaseview/list';
 export const DATASET_LIST_PATH = 'tablemodelview/list';
 export const ALERT_LIST = '/alert/list/';

@@ -117,9 +117,9 @@ const publishDataMask = debounce(
 
     // pathname could be updated somewhere else through window.history
     // keep react router history in sync with window history
-    // replace params only when current page is /superset/dashboard
+    // replace params only when current page is /alpha/dashboard
     // this prevents a race condition between updating filters and navigating to Explore
-    if (window.location.pathname.includes('/superset/dashboard')) {
+    if (window.location.pathname.includes('/alpha/dashboard')) {
       history.location.pathname = window.location.pathname;
       history.replace({
         search: newParams.toString(),

@@ -132,7 +132,7 @@ const dashboardInfo = {
   slug: null,
   thumbnail_url:
     '/api/v1/dashboard/26/thumbnail/b24805e98d90116da8c0974d24f5c533/',
-  url: '/superset/dashboard/26/',
+  url: '/alpha/dashboard/26/',
 };
 
 fetchMock.get('glob:*/api/v1/dashboard/26', {
