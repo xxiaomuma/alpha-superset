@@ -28,7 +28,7 @@ RUN /app/docker/apt-install.sh build-essential python3 zstd
 
 # Define environment variables for frontend build
 ENV BUILD_CMD=${NPM_BUILD_CMD} \
-    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+    PUPPETEER_SKIP_DOWNLOAD=true
 
 # Run the frontend memory monitoring script
 RUN /app/docker/frontend-mem-nag.sh
@@ -139,7 +139,8 @@ ENV SUPERSET_HOME="/app/superset_home" \
     SUPERSET_ENV="production" \
     FLASK_APP="superset.app:create_app()" \
     PYTHONPATH="/app/pythonpath" \
-    SUPERSET_PORT="8088"
+    SUPERSET_PORT="8088" \
+    PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright
 
 # Copy the entrypoints, make them executable in userspace
 COPY --chmod=755 docker/entrypoints /app/docker/entrypoints
