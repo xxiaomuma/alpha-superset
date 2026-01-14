@@ -2,12 +2,8 @@
 # Node stage to deal with static asset construction
 ######################################################################
 ARG PY_VER=3.11.13-slim-bookworm
-
-# If BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
 ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
-
-# Include translations in the final build
-ARG BUILD_TRANSLATIONS="false"
+ARG BUILD_TRANSLATIONS="true"
 
 ######################################################################
 # superset-node-ci used as a base for building frontend assets and CI
@@ -17,6 +13,11 @@ ARG BUILD_TRANSLATIONS
 ENV BUILD_TRANSLATIONS=${BUILD_TRANSLATIONS}
 ARG DEV_MODE="false"
 ENV DEV_MODE=${DEV_MODE}
+# change apt source
+COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
+RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
+RUN npm config set registry https://registry.npmmirror.com
+ENV NPM_CONFIG_REGISTRY=https://registry.npmmirror.com
 
 COPY docker/ /app/docker/
 # Arguments for build configuration
@@ -88,6 +89,11 @@ FROM python:${PY_VER} AS python-base
 
 ARG SUPERSET_HOME="/app/superset_home"
 ENV SUPERSET_HOME=${SUPERSET_HOME}
+
+COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
+RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
+ENV PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple \
+    PIP_TRUSTED_HOST=mirrors.aliyun.com
 
 RUN mkdir -p $SUPERSET_HOME
 RUN useradd --user-group -d ${SUPERSET_HOME} -m --no-log-init --shell /bin/bash superset \
@@ -163,7 +169,7 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     fi
 
 # Copy required files for Python build
-COPY pyproject.toml setup.py MANIFEST.in README.md ./
+COPY pyproject.toml setup.py MANIFEST.in ./
 COPY superset-frontend/package.json superset-frontend/
 COPY scripts/check-env.py scripts/
 
@@ -200,6 +206,14 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
+RUN /app/docker/apt-install.sh \
+    pkg-config \
+    default-libmysqlclient-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    libmariadb-dev
 # Install Python dependencies using docker/pip-install.sh
 COPY requirements/base.txt requirements/
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
@@ -207,6 +221,8 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
 # Install the superset package
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install -e .
+RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
+    uv pip install mysqlclient
 RUN python -m compileall /app/superset
 
 USER superset
