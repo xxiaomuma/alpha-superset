@@ -75,11 +75,8 @@ RUN --mount=type=cache,target=/root/.npm \
 COPY superset/translations /app/superset/translations
 
 # Build translations if enabled, then cleanup localization files
-RUN if [ "$BUILD_TRANSLATIONS" = "true" ]; then \
-        npm run build-translation; \
-    fi; \
-    rm -rf /app/superset/translations/*/*/*.po; \
-    rm -rf /app/superset/translations/*/*/*.mo;
+RUN if [ "$BUILD_TRANSLATIONS" = "true" ]; then npm run build-translation; fi && \
+    rm -rf /app/superset/translations/*/*/*.po
 
 
 ######################################################################
