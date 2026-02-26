@@ -47,7 +47,7 @@
     "seedrandom": "^3.0.5",
     "@visx/responsive": "^3.12.0",
     "whatwg-fetch": "^3.6.20",
-    "xss": "^1.0.14"
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "@emotion/styled": "^11.3.0",
