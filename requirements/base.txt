@@ -432,3 +432,4 @@ zipp==3.21.0
 zstandard==0.23.0
     # via flask-compress
 mysqlclient==2.2.7
+clickhouse-connect==0.8.15

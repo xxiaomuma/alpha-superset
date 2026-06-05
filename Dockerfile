@@ -194,9 +194,9 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install mysqlclient
 
-# 安装 ClickHouse driver
+# 安装 ClickHouse driver（关键）
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
-    uv pip install .[clickhouse]
+    uv pip install clickhouse-connect
 
 RUN python -m compileall /app/superset
 
@@ -221,7 +221,7 @@ RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
 RUN --mount=type=cache,target=${SUPERSET_HOME}/.cache/uv \
     uv pip install .
 
-RUN uv pip install .[postgres,clickhouse]
+RUN uv pip install .[postgres]
 RUN python -m compileall /app/superset
 USER superset
 
@@ -230,6 +230,6 @@ USER superset
 ######################################################################
 FROM lean AS ci
 USER root
-RUN uv pip install .[postgres,clickhouse]
+RUN uv pip install .[postgres]
 USER superset
 CMD ["/app/docker/entrypoints/docker-ci.sh"]
