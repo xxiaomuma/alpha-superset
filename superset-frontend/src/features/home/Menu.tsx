@@ -17,7 +17,7 @@
  * under the License.
  */
 import { useState, useEffect } from 'react';
-import { styled } from '@superset-ui/core';
+import { styled, t } from '@superset-ui/core';
 import { debounce } from 'lodash';
 import { getUrlParam } from 'src/utils/urlUtils';
 import { Row, Col, Grid } from 'src/components';
@@ -196,7 +196,7 @@ export function Menu({
       return (
         <MainNav.Item key={label} role="presentation">
           <NavLink role="button" to={url} activeClassName="is-active">
-            {label}
+            {t(label)}
           </NavLink>
         </MainNav.Item>
       );
@@ -204,14 +204,14 @@ export function Menu({
     if (url) {
       return (
         <MainNav.Item key={label}>
-          <a href={url}>{label}</a>
+          <a href={url}>{t(label)}</a>
         </MainNav.Item>
       );
     }
     return (
       <StyledSubMenu
         key={index}
-        title={label}
+        title={t(label)}
         icon={showMenu === 'inline' ? <></> : <Icons.TriangleDown />}
       >
         {childs?.map((child: MenuObjectChildProps | string, index1: number) => {
@@ -227,10 +227,10 @@ export function Menu({
                     exact
                     activeClassName="is-active"
                   >
-                    {child.label}
+                    {t(child.label)}
                   </NavLink>
                 ) : (
-                  <a href={child.url}>{child.label}</a>
+                  <a href={child.url}>{t(child.label)}</a>
                 )}
               </MainNav.Item>
             );
