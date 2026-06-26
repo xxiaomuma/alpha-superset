@@ -214,6 +214,12 @@ USER superset
 # dev
 ######################################################################
 FROM python-common AS dev
+# ---------- 国内源 ----------
+COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
+RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
+
+ENV PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple \
+    PIP_TRUSTED_HOST=mirrors.aliyun.com
 
 RUN /app/docker/apt-install.sh \
     git \
