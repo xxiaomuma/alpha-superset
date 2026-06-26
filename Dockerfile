@@ -172,8 +172,12 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
+# ---------- 国内源 ----------
 COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
 RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
+
+ENV PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple \
+    PIP_TRUSTED_HOST=mirrors.aliyun.com
 # 安装 MySQL 客户端编译所需的依赖
 RUN /app/docker/apt-install.sh \
     pkg-config \
