@@ -172,6 +172,8 @@ EXPOSE ${SUPERSET_PORT}
 ######################################################################
 FROM python-common AS lean
 
+COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
+RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
 # 安装 MySQL 客户端编译所需的依赖
 RUN /app/docker/apt-install.sh \
     pkg-config \
