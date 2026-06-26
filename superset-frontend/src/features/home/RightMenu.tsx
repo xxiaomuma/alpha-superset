@@ -314,12 +314,12 @@ const RightMenu = ({
     item.disable ? (
       <Menu.Item key={item.name} css={styledDisabled} disabled>
         <Tooltip placement="top" title={tooltipText}>
-          {t(item.label)}
+          {item.label}
         </Tooltip>
       </Menu.Item>
     ) : (
       <Menu.Item key={item.name} css={styledChildMenu}>
-        {item.url ? <a href={item.url}> {t(item.label)} </a> : t(item.label)}
+        {item.url ? <a href={item.url}> {item.label} </a> : item.label}
       </Menu.Item>
     );
 
@@ -425,7 +425,7 @@ const RightMenu = ({
                     <StyledSubMenu
                       key={`sub2_${menu.label}`}
                       className="data-menu"
-                      title={t(menu.label)}
+                      title={menu.label}
                       icon={menuIcon(menu)}
                     >
                       {menu?.childs?.map?.((item, idx) =>
@@ -456,7 +456,7 @@ const RightMenu = ({
                           data-test={`menu-item-${menu.label}`}
                           className={`fa ${menu.icon}`}
                         />{' '}
-                        {t(menu.label)}
+                        {menu.label}
                       </Link>
                     ) : (
                       <a href={menu.url}>
@@ -464,7 +464,7 @@ const RightMenu = ({
                           data-test={`menu-item-${menu.label}`}
                           className={`fa ${menu.icon}`}
                         />{' '}
-                        {t(menu.label)}
+                        {menu.label}
                       </a>
                     )}
                   </Menu.Item>
@@ -478,16 +478,16 @@ const RightMenu = ({
           icon={<Icons.TriangleDown iconSize="xl" />}
         >
           {settings?.map?.((section, index) => [
-            <Menu.ItemGroup key={`${section.label}`} title={t(section.label)}>
+            <Menu.ItemGroup key={`${section.label}`} title={section.label}>
               {section?.childs?.map?.(child => {
                 if (typeof child !== 'string') {
                   const menuItemDisplay = RightMenuItemIconExtension ? (
                     <StyledMenuItemWithIcon>
-                      {t(child.label)}
+                      {child.label}
                       <RightMenuItemIconExtension menuChild={child} />
                     </StyledMenuItemWithIcon>
                   ) : (
-                    t(child.label)
+                    child.label
                   );
                   return (
                     <Menu.Item key={`${child.label}`}>
