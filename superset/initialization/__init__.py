@@ -28,7 +28,7 @@ from flask import abort, Flask, redirect, request, session
 from flask_appbuilder import expose, IndexView
 from flask_appbuilder.api import safe
 from flask_appbuilder.utils.base import get_safe_redirect
-from flask_babel import gettext as __, refresh
+from flask_babel import lazy_gettext as __, refresh
 from flask_compress import Compress
 from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
