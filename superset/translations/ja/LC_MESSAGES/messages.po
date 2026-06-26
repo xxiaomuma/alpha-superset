@@ -7760,8 +7760,8 @@ msgstr "ツリー上の中間ノードラベルの位置"
 msgid "Position of row level subtotal"
 msgstr "行レベルの小計の位置"
 
-msgid "Powered by Apache Superset"
-msgstr "Apache スーパーセットを搭載"
+msgid "Powered by Alpha"
+msgstr "Powered by Alpha"
 
 msgid "Pre-filter"
 msgstr "プレフィルター"

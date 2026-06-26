@@ -8106,8 +8106,8 @@ msgstr "中間節點標籤在樹中的位置"
 msgid "Position of row level subtotal"
 msgstr "行級小計的位置"
 
-msgid "Powered by Apache Superset"
-msgstr "由Apache Superset提供支持"
+msgid "Powered by Alpha"
+msgstr "由 Alpha 提供支持"
 
 msgid "Pre-filter"
 msgstr "預過濾"

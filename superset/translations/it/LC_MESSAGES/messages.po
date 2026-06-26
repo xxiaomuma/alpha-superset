@@ -8081,7 +8081,7 @@ msgstr ""
 msgid "Position of row level subtotal"
 msgstr ""
 
-msgid "Powered by Apache Superset"
+msgid "Powered by Alpha"
 msgstr ""
 
 #, fuzzy

@@ -8286,8 +8286,8 @@ msgstr "Beschriftungs-Position der Zwischenknoten im Baum"
 msgid "Position of row level subtotal"
 msgstr "Position der Zwischensumme auf Zeilenebene"
 
-msgid "Powered by Apache Superset"
-msgstr "Powered Apache Superset"
+msgid "Powered by Alpha"
+msgstr "Powered by Alpha"
 
 msgid "Pre-filter"
 msgstr "Vorfilter"

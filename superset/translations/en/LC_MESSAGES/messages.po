@@ -7551,8 +7551,8 @@ msgstr ""
 msgid "Position of row level subtotal"
 msgstr ""
 
-msgid "Powered by Apache Superset"
-msgstr ""
+msgid "Powered by Alpha"
+msgstr "Powered by Alpha"
 
 msgid "Pre-filter"
 msgstr ""

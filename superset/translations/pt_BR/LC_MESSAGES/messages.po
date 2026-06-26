@@ -8294,8 +8294,8 @@ msgstr "Posição do rótulo do nó intermédio na árvore"
 msgid "Position of row level subtotal"
 msgstr "Posição do subtotal ao nível da linha"
 
-msgid "Powered by Apache Superset"
-msgstr "Feito por Apache Superset"
+msgid "Powered by Alpha"
+msgstr "Feito por Alpha"
 
 #, fuzzy
 msgid "Pre-filter"
