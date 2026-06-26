@@ -13367,3 +13367,220 @@ msgstr ""
 
 msgid "zoom area"
 msgstr ""
+
+# FAB ab_permission.name display labels
+msgid "can_read"
+msgstr ""
+
+msgid "can_write"
+msgstr ""
+
+msgid "can_upload"
+msgstr ""
+
+msgid "can_this_form_post"
+msgstr ""
+
+msgid "can_this_form_get"
+msgstr ""
+
+msgid "can_edit"
+msgstr ""
+
+msgid "can_userinfo"
+msgstr ""
+
+msgid "can_show"
+msgstr ""
+
+msgid "can_list"
+msgstr ""
+
+msgid "can_add"
+msgstr ""
+
+msgid "can_delete"
+msgstr ""
+
+msgid "resetmypassword"
+msgstr ""
+
+msgid "resetpasswords"
+msgstr ""
+
+msgid "userinfoedit"
+msgstr ""
+
+msgid "copyrole"
+msgstr ""
+
+msgid "can_get"
+msgstr ""
+
+msgid "can_invalidate"
+msgstr ""
+
+msgid "can_warm_up_cache"
+msgstr ""
+
+msgid "can_export"
+msgstr ""
+
+msgid "can_cache_dashboard_screenshot"
+msgstr ""
+
+msgid "can_delete_embedded"
+msgstr ""
+
+msgid "can_get_embedded"
+msgstr ""
+
+msgid "can_set_embedded"
+msgstr ""
+
+msgid "can_get_or_create_dataset"
+msgstr ""
+
+msgid "can_duplicate"
+msgstr ""
+
+msgid "can_get_column_values"
+msgstr ""
+
+msgid "can_import_"
+msgstr ""
+
+msgid "can_bulk_create"
+msgstr ""
+
+msgid "can_format_sql"
+msgstr ""
+
+msgid "can_export_csv"
+msgstr ""
+
+msgid "can_estimate_query_cost"
+msgstr ""
+
+msgid "can_execute_sql_query"
+msgstr ""
+
+msgid "can_get_results"
+msgstr ""
+
+msgid "can_download"
+msgstr ""
+
+msgid "can_query_form_data"
+msgstr ""
+
+msgid "can_query"
+msgstr ""
+
+msgid "can_time_range"
+msgstr ""
+
+msgid "can_external_metadata_by_name"
+msgstr ""
+
+msgid "can_save"
+msgstr ""
+
+msgid "can_external_metadata"
+msgstr ""
+
+msgid "can_samples"
+msgstr ""
+
+msgid "can_explore"
+msgstr ""
+
+msgid "can_dashboard_permalink"
+msgstr ""
+
+msgid "can_slice"
+msgstr ""
+
+msgid "can_log"
+msgstr ""
+
+msgid "can_explore_json"
+msgstr ""
+
+msgid "can_sqllab_history"
+msgstr ""
+
+msgid "can_dashboard"
+msgstr ""
+
+msgid "can_fetch_datasource_metadata"
+msgstr ""
+
+msgid "can_post"
+msgstr ""
+
+msgid "can_expanded"
+msgstr ""
+
+msgid "can_delete_query"
+msgstr ""
+
+msgid "can_activate"
+msgstr ""
+
+msgid "can_put"
+msgstr ""
+
+msgid "can_migrate_query"
+msgstr ""
+
+msgid "can_tags"
+msgstr ""
+
+msgid "can_recent_activity"
+msgstr ""
+
+msgid "can_grant_guest_token"
+msgstr ""
+
+msgid "menu_access"
+msgstr ""
+
+msgid "all_datasource_access"
+msgstr ""
+
+msgid "all_database_access"
+msgstr ""
+
+msgid "all_query_access"
+msgstr ""
+
+msgid "can_csv"
+msgstr ""
+
+msgid "can_share_dashboard"
+msgstr ""
+
+msgid "can_share_chart"
+msgstr ""
+
+msgid "can_sqllab"
+msgstr ""
+
+msgid "can_view_query"
+msgstr ""
+
+msgid "can_view_chart_as_table"
+msgstr ""
+
+msgid "can_drill"
+msgstr ""
+
+msgid "can_tag"
+msgstr ""
+
+msgid "database_access"
+msgstr ""
+
+msgid "schema_access"
+msgstr ""

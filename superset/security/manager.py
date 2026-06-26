@@ -67,6 +67,7 @@ from superset.security.guest_token import (
     GuestUser,
 )
 from superset.sql_parse import extract_tables_from_jinja_sql, Table
+from superset.translations.permission_labels import install_fab_permission_label_translation
 from superset.tasks.utils import get_current_user
 from superset.utils import json
 from superset.utils.core import (
@@ -143,6 +144,8 @@ ViewMenuModelView.include_route_methods = {RouteMethod.LIST}
 RoleModelView.list_columns = ["name"]
 RoleModelView.edit_columns = ["name", "permissions", "user"]
 RoleModelView.related_views = []
+
+install_fab_permission_label_translation()
 
 
 def freeze_value(value: Any) -> str:

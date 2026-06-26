@@ -14364,3 +14364,220 @@ msgstr "年"
 
 msgid "zoom area"
 msgstr "缩放面积"
+
+# FAB ab_permission.name display labels (database values stay English)
+msgid "can_read"
+msgstr "读取"
+
+msgid "can_write"
+msgstr "写入"
+
+msgid "can_upload"
+msgstr "上传"
+
+msgid "can_this_form_post"
+msgstr "提交表单"
+
+msgid "can_this_form_get"
+msgstr "访问表单"
+
+msgid "can_edit"
+msgstr "编辑"
+
+msgid "can_userinfo"
+msgstr "查看用户信息"
+
+msgid "can_show"
+msgstr "查看详情"
+
+msgid "can_list"
+msgstr "列表"
+
+msgid "can_add"
+msgstr "新增"
+
+msgid "can_delete"
+msgstr "删除"
+
+msgid "resetmypassword"
+msgstr "重置我的密码"
+
+msgid "resetpasswords"
+msgstr "重置密码"
+
+msgid "userinfoedit"
+msgstr "编辑用户信息"
+
+msgid "copyrole"
+msgstr "复制角色"
+
+msgid "can_get"
+msgstr "获取"
+
+msgid "can_invalidate"
+msgstr "使缓存失效"
+
+msgid "can_warm_up_cache"
+msgstr "预热缓存"
+
+msgid "can_export"
+msgstr "导出"
+
+msgid "can_cache_dashboard_screenshot"
+msgstr "缓存看板截图"
+
+msgid "can_delete_embedded"
+msgstr "删除嵌入式配置"
+
+msgid "can_get_embedded"
+msgstr "获取嵌入式配置"
+
+msgid "can_set_embedded"
+msgstr "设置嵌入式配置"
+
+msgid "can_get_or_create_dataset"
+msgstr "获取或创建数据集"
+
+msgid "can_duplicate"
+msgstr "复制"
+
+msgid "can_get_column_values"
+msgstr "获取列值"
+
+msgid "can_import_"
+msgstr "导入"
+
+msgid "can_bulk_create"
+msgstr "批量创建"
+
+msgid "can_format_sql"
+msgstr "格式化 SQL"
+
+msgid "can_export_csv"
+msgstr "导出 CSV"
+
+msgid "can_estimate_query_cost"
+msgstr "估算查询成本"
+
+msgid "can_execute_sql_query"
+msgstr "执行 SQL 查询"
+
+msgid "can_get_results"
+msgstr "获取查询结果"
+
+msgid "can_download"
+msgstr "下载"
+
+msgid "can_query_form_data"
+msgstr "查询表单数据"
+
+msgid "can_query"
+msgstr "查询"
+
+msgid "can_time_range"
+msgstr "时间范围"
+
+msgid "can_external_metadata_by_name"
+msgstr "按名称获取外部元数据"
+
+msgid "can_save"
+msgstr "保存"
+
+msgid "can_external_metadata"
+msgstr "获取外部元数据"
+
+msgid "can_samples"
+msgstr "查看样本数据"
+
+msgid "can_explore"
+msgstr "探索分析"
+
+msgid "can_dashboard_permalink"
+msgstr "看板永久链接"
+
+msgid "can_slice"
+msgstr "图表操作"
+
+msgid "can_log"
+msgstr "查看日志"
+
+msgid "can_explore_json"
+msgstr "探索 JSON 数据"
+
+msgid "can_sqllab_history"
+msgstr "SQL Lab 历史"
+
+msgid "can_dashboard"
+msgstr "看板操作"
+
+msgid "can_fetch_datasource_metadata"
+msgstr "获取数据源元数据"
+
+msgid "can_post"
+msgstr "提交(POST)"
+
+msgid "can_expanded"
+msgstr "展开"
+
+msgid "can_delete_query"
+msgstr "删除查询"
+
+msgid "can_activate"
+msgstr "激活"
+
+msgid "can_put"
+msgstr "更新(PUT)"
+
+msgid "can_migrate_query"
+msgstr "迁移查询"
+
+msgid "can_tags"
+msgstr "标签管理"
+
+msgid "can_recent_activity"
+msgstr "最近活动"
+
+msgid "can_grant_guest_token"
+msgstr "授予访客令牌"
+
+msgid "menu_access"
+msgstr "菜单访问"
+
+msgid "all_datasource_access"
+msgstr "全部数据集访问"
+
+msgid "all_database_access"
+msgstr "全部数据库访问"
+
+msgid "all_query_access"
+msgstr "全部查询访问"
+
+msgid "can_csv"
+msgstr "导出 CSV（旧）"
+
+msgid "can_share_dashboard"
+msgstr "分享看板"
+
+msgid "can_share_chart"
+msgstr "分享图表"
+
+msgid "can_sqllab"
+msgstr "SQL Lab 访问"
+
+msgid "can_view_query"
+msgstr "查看查询"
+
+msgid "can_view_chart_as_table"
+msgstr "以表格查看图表"
+
+msgid "can_drill"
+msgstr "下钻"
+
+msgid "can_tag"
+msgstr "打标签"
+
+msgid "database_access"
+msgstr "数据库访问"
+
+msgid "schema_access"
+msgstr "Schema 访问"
