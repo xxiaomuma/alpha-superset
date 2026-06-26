@@ -215,6 +215,12 @@ USER superset
 ######################################################################
 FROM python-common AS dev
 # ---------- 国内源 ----------
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple/ \
+    UV_LINK_MODE=copy \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 COPY docker/change-apt-source.sh /tmp/change-apt-source.sh
 RUN chmod +x /tmp/change-apt-source.sh && /tmp/change-apt-source.sh
 
