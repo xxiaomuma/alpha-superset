@@ -60,6 +60,7 @@ from superset.db_engine_specs.gsheets import GSheetsEngineSpec
 from superset.extensions import cache_manager
 from superset.reports.models import ReportRecipientType
 from superset.superset_typing import FlaskResponse
+from superset.translations.menu_labels import localize_menu
 from superset.translations.utils import get_language_pack
 from superset.utils import core as utils, json
 from superset.utils.filters import get_dataset_access_filters
@@ -252,8 +253,11 @@ def menu_data(user: User) -> dict[str, Any]:
     if callable(brand_text := appbuilder.app.config["LOGO_RIGHT_TEXT"]):
         brand_text = brand_text()
 
+    locale = get_locale()
+    language = locale.language if locale else session.get("locale", "en")
+
     return {
-        "menu": appbuilder.menu.get_data(),
+        "menu": localize_menu(appbuilder.menu.get_data(), language),
         "brand": {
             "path": appbuilder.app.config["LOGO_TARGET_PATH"] or "/alpha/welcome/",
             "icon": appbuilder.app_icon,
