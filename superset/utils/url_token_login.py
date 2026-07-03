@@ -17,10 +17,10 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
-from flask import current_app, redirect, request
+from flask import current_app, redirect, request, session
 
 if TYPE_CHECKING:
     from flask import Flask, Response
@@ -34,18 +34,36 @@ MAX_SESSION_COOKIE_BYTES = 4093
 DEFAULT_REDIRECT_AFTER_TOKEN = "/alpha/welcome/"
 
 
-def normalize_session_cookie_value(token: str) -> str:
-    """
-    Flask signed session cookies start with a single "." (itsdangerous format).
-    Accept ?token=eJwl... or ?token=.eJwl... or ?token=..eJwl... from partners.
-    """
+def session_cookie_candidates(token: str) -> list[str]:
+    """Return likely Flask session cookie values for a URL token."""
     token = token.strip()
     if not token:
-        return token
+        return []
+
     payload = token.lstrip(".")
-    if not payload:
-        return token
-    return f".{payload}"
+    candidates = [token]
+    if payload and payload not in candidates:
+        candidates.append(payload)
+    if not token.startswith("."):
+        candidates.append(f".{payload}")
+    return candidates
+
+
+def parse_session_token(app: Flask, token: str) -> dict[str, Any] | None:
+    """Decode a signed session token using Superset's session serializer."""
+    serializer = app.session_interface.get_signing_serializer(app)
+    if serializer is None:
+        return None
+
+    max_age = int(app.permanent_session_lifetime.total_seconds())
+    for candidate in session_cookie_candidates(token):
+        try:
+            data = serializer.loads(candidate, max_age=max_age)
+        except Exception:  # pylint: disable=broad-except
+            continue
+        if isinstance(data, dict):
+            return data
+    return None
 
 
 def build_url_without_token() -> str:
@@ -69,14 +87,20 @@ def build_url_without_token() -> str:
     return parsed.path or "/"
 
 
+def get_default_redirect_path() -> str:
+    return (
+        current_app.config.get("URL_TOKEN_LOGIN_REDIRECT")
+        or current_app.config.get("LOGO_TARGET_PATH")
+        or DEFAULT_REDIRECT_AFTER_TOKEN
+    )
+
+
 def get_redirect_target() -> str:
     """
     After applying the session cookie, land on the app home instead of /login.
     Keeps non-token query params when redirecting from non-login pages.
     """
-    redirect_path = current_app.config.get(
-        "URL_TOKEN_LOGIN_REDIRECT", DEFAULT_REDIRECT_AFTER_TOKEN
-    )
+    redirect_path = get_default_redirect_path()
     if request.path.startswith("/login"):
         return redirect_path
 
@@ -90,52 +114,82 @@ def get_redirect_target() -> str:
 def set_session_cookie(response: Response, token: str) -> None:
     """Set the session cookie using the same options as a normal Flask login."""
     app = current_app
-    samesite = app.config.get("SESSION_COOKIE_SAMESITE")
+    domain = app.config.get("SESSION_COOKIE_DOMAIN") or None
+    samesite = app.config.get("SESSION_COOKIE_SAMESITE") or None
     response.set_cookie(
         app.session_cookie_name,
         token,
         httponly=app.config.get("SESSION_COOKIE_HTTPONLY", True),
         secure=app.config.get("SESSION_COOKIE_SECURE", False),
-        samesite=samesite if samesite else None,
-        domain=app.config.get("SESSION_COOKIE_DOMAIN"),
+        samesite=samesite,
+        domain=domain,
         path=app.config.get("SESSION_COOKIE_PATH") or "/",
     )
 
 
+def apply_session_from_token(response: Response, token: str) -> bool:
+    """
+    Persist the token as a session cookie.
+
+    Prefer Flask's session interface so the cookie format matches login exactly.
+    Fall back to raw Set-Cookie when the token cannot be decoded locally.
+    """
+    app = current_app
+    session_data = parse_session_token(app, token)
+    if session_data is not None:
+        session.clear()
+        session.update(session_data)
+        app.session_interface.save_session(app, session, response)
+        return True
+
+    for candidate in session_cookie_candidates(token):
+        if len(candidate.encode("utf-8")) > MAX_SESSION_COOKIE_BYTES:
+            continue
+        try:
+            set_session_cookie(response, candidate)
+            return True
+        except Exception:  # pylint: disable=broad-except
+            logger.debug(
+                "URL token login: set_cookie failed for candidate prefix=%s",
+                candidate[:16],
+                exc_info=True,
+            )
+    return False
+
+
 def handle_url_token_login() -> Response | None:
+    token = request.args.get(TOKEN_QUERY_PARAM)
+    if not token:
+        return None
+
+    if any(request.path.startswith(prefix) for prefix in SKIP_PATH_PREFIXES):
+        return None
+
     try:
-        token = request.args.get(TOKEN_QUERY_PARAM)
-        if not token:
-            return None
-
-        if any(request.path.startswith(prefix) for prefix in SKIP_PATH_PREFIXES):
-            return None
-
-        session_value = normalize_session_cookie_value(token)
-        if len(session_value.encode("utf-8")) > MAX_SESSION_COOKIE_BYTES:
+        if len(token.encode("utf-8")) > MAX_SESSION_COOKIE_BYTES:
             logger.error(
                 "URL token login: token too long for session cookie (%s bytes)",
-                len(session_value.encode("utf-8")),
+                len(token.encode("utf-8")),
             )
             return redirect(build_url_without_token())
 
         target = get_redirect_target()
-        logger.info(
-            "URL token login: applying session cookie, redirect to %s",
-            target,
-        )
-        if session_value != token.strip():
-            logger.info("URL token login: normalized token to Flask session format")
-
         response = redirect(target)
-        set_session_cookie(response, session_value)
-        return response
+        if apply_session_from_token(response, token):
+            logger.info(
+                "URL token login: session cookie applied, redirect to %s",
+                target,
+            )
+            return response
+
+        logger.error("URL token login: unable to apply session cookie")
+        return redirect(build_url_without_token())
     except Exception:  # pylint: disable=broad-except
         logger.exception("URL token login failed")
         try:
             return redirect(build_url_without_token())
         except Exception:  # pylint: disable=broad-except
-            return redirect(DEFAULT_REDIRECT_AFTER_TOKEN)
+            return redirect(get_default_redirect_path())
 
 
 def register_url_token_login(app: Flask) -> None:
