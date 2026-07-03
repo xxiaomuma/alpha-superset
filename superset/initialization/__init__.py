@@ -62,6 +62,7 @@ from superset.tags.core import register_sqla_event_listeners
 from superset.utils.core import is_test, pessimistic_connection_handling
 from superset.utils.decorators import transaction
 from superset.utils.log import DBEventLogger, get_event_logger_from_cfg_value
+from superset.utils.url_token_login import register_url_token_login
 
 if TYPE_CHECKING:
     from superset.app import SupersetApp
@@ -445,6 +446,9 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
             logger.error("Refusing to start due to insecure SECRET_KEY")
             sys.exit(1)
 
+    def configure_url_token_login(self) -> None:
+        register_url_token_login(self.superset_app)
+
     def configure_session(self) -> None:
         if self.config["SESSION_SERVER_SIDE"]:
             Session(self.superset_app)
@@ -457,6 +461,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         self.pre_init()
         self.check_secret_key()
         self.configure_session()
+        self.configure_url_token_login()
         # Configuration of logging must be done first to apply the formatter properly
         self.configure_logging()
         # Configuration of feature_flags must be done first to allow init features
@@ -693,7 +698,10 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self) -> FlaskResponse:
-        return redirect("/alpha/welcome/")
+        target = "/alpha/welcome/"
+        if query_string := request.query_string.decode():
+            target = f"{target}?{query_string}"
+        return redirect(target)
 
     @expose("/lang/<string:locale>")
     @safe

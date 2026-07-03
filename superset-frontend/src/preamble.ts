@@ -33,9 +33,6 @@ import setupFormatters from './setup/setupFormatters';
 import setupDashboardComponents from './setup/setupDashboardComponents';
 import { User } from './types/bootstrapTypes';
 import getBootstrapData from './utils/getBootstrapData';
-import setupTokenLogin from './utils/setupTokenLogin';
-
-const isTokenLoginRedirect = setupTokenLogin();
 
 if (process.env.WEBPACK_MODE === 'development') {
   setHotLoaderConfig({ logLevel: 'debug', trackTailUpdates: false });
@@ -44,41 +41,39 @@ if (process.env.WEBPACK_MODE === 'development') {
 // eslint-disable-next-line import/no-mutable-exports
 const bootstrapData = getBootstrapData();
 
-if (!isTokenLoginRedirect) {
-  // Configure translation
-  if (typeof window !== 'undefined') {
-    configure({ languagePack: bootstrapData.common.language_pack });
-    dayjs.locale(bootstrapData.common.locale);
-  } else {
-    configure();
-  }
-
-  // Configure feature flags
-  initFeatureFlags(bootstrapData.common.feature_flags);
-
-  // Setup SupersetClient
-  setupClient();
-
-  setupColors(
-    bootstrapData.common.extra_categorical_color_schemes,
-    bootstrapData.common.extra_sequential_color_schemes,
-  );
-
-  // Setup number formatters
-  setupFormatters(
-    bootstrapData.common.d3_format,
-    bootstrapData.common.d3_time_format,
-  );
-
-  setupDashboardComponents();
+// Configure translation
+if (typeof window !== 'undefined') {
+  configure({ languagePack: bootstrapData.common.language_pack });
+  dayjs.locale(bootstrapData.common.locale);
+} else {
+  configure();
 }
+
+// Configure feature flags
+initFeatureFlags(bootstrapData.common.feature_flags);
+
+// Setup SupersetClient
+setupClient();
+
+setupColors(
+  bootstrapData.common.extra_categorical_color_schemes,
+  bootstrapData.common.extra_sequential_color_schemes,
+);
+
+// Setup number formatters
+setupFormatters(
+  bootstrapData.common.d3_format,
+  bootstrapData.common.d3_time_format,
+);
+
+setupDashboardComponents();
 
 export const theme = merge(
   supersetTheme,
   bootstrapData.common.theme_overrides ?? {},
 );
 
-if (!isTokenLoginRedirect && bootstrapData.user?.isActive) {
+if (bootstrapData.user?.isActive) {
   const getMe = makeApi<void, User>({
     method: 'GET',
     endpoint: '/api/v1/me/',

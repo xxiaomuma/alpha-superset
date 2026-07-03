@@ -897,7 +897,10 @@ class Superset(BaseSupersetView):
         if not g.user or not get_user_id():
             if conf["PUBLIC_ROLE_LIKE"]:
                 return self.render_template("superset/public_welcome.html")
-            return redirect(appbuilder.get_url_for_login)
+            login_url = appbuilder.get_url_for_login
+            if query_string := request.query_string.decode():
+                login_url = f"{login_url}?{query_string}"
+            return redirect(login_url)
 
         if welcome_dashboard_id := (
             db.session.query(UserAttribute.welcome_dashboard_id)
