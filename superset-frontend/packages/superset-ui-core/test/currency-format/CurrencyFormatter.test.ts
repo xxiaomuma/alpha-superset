@@ -31,9 +31,21 @@ it('getCurrencySymbol', () => {
     getCurrencySymbol({ symbol: 'USD', symbolPosition: 'prefix' }),
   ).toEqual('$');
 
-  expect(() =>
+  expect(
     getCurrencySymbol({ symbol: 'INVALID_CODE', symbolPosition: 'prefix' }),
-  ).toThrow(RangeError);
+  ).toEqual('INVALID_CODE');
+  expect(
+    getCurrencySymbol({ symbol: '件', symbolPosition: 'suffix' }),
+  ).toEqual('件');
+  expect(
+    getCurrencySymbol({ symbol: '个', symbolPosition: 'suffix' }),
+  ).toEqual('个');
+  expect(
+    getCurrencySymbol({ symbol: '人', symbolPosition: 'suffix' }),
+  ).toEqual('人');
+  expect(
+    getCurrencySymbol({ symbol: '元', symbolPosition: 'suffix' }),
+  ).toEqual('元');
 });
 
 it('CurrencyFormatter object fields', () => {

@@ -959,10 +959,10 @@ msgstr "增加过滤条件"
 msgid "Added"
 msgstr "已添加"
 
-#, fuzzy, python-format
+#, python-format
 msgid "Added to 1 dashboard"
 msgid_plural "Added to %s dashboards"
-msgstr[0] "添加到看板"
+msgstr[0] "已添加到 %s 个看板"
 
 msgid "Additional Parameters"
 msgstr "附加参数"
@@ -2123,7 +2123,6 @@ msgstr "缓存超时（秒）"
 msgid "Cache timeout"
 msgstr "缓存时间"
 
-#, fuzzy
 msgid "Cached"
 msgstr "已缓存"
 
@@ -3270,9 +3269,8 @@ msgstr "累计"
 msgid "Currency"
 msgstr "货币"
 
-#, fuzzy
 msgid "Currency format"
-msgstr "货币格式"
+msgstr "单位格式"
 
 msgid "Currency prefix or suffix"
 msgstr "货币前缀或后缀"
@@ -5319,9 +5317,8 @@ msgstr "在SQL工具箱中点击CTAS或CVAS强制创建所有数据表或视图"
 msgid "Force categorical"
 msgstr "强制分类"
 
-#, fuzzy
 msgid "Force date format"
-msgstr "强制日期格式化"
+msgstr "强制日期格式"
 
 msgid "Force refresh"
 msgstr "强制刷新"
@@ -8925,9 +8922,8 @@ msgstr "样本标准差"
 msgid "Sample Variance"
 msgstr "样本方差"
 
-#, fuzzy
 msgid "Samples"
-msgstr "数据预览"
+msgstr "样本"
 
 #, fuzzy
 msgid "Samples for dataset could not be retrieved."
@@ -9263,7 +9259,6 @@ msgstr "选择将要上传文件的数据库"
 msgid "Select a database to write a query"
 msgstr "选择要进行查询的数据库"
 
-#, fuzzy
 msgid "Select a dataset"
 msgstr "选择数据集"
 
@@ -12228,9 +12223,8 @@ msgstr "未命名的查询"
 msgid "Update"
 msgstr "更新"
 
-#, fuzzy
 msgid "Update chart"
-msgstr "图表保存"
+msgstr "更新图表"
 
 msgid "Updating chart was stopped"
 msgstr "更新图表已停止"

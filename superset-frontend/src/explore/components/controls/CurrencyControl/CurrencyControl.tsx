@@ -78,12 +78,17 @@ export const CurrencyControl = ({
   );
   const currenciesOptions = useMemo(
     () =>
-      ensureIsArray(currencies).map(currencyCode => ({
-        value: currencyCode,
-        label: `${getCurrencySymbol({
-          symbol: currencyCode,
-        })} (${currencyCode})`,
-      })),
+      ensureIsArray(currencies).map(currencyCode => {
+        const displaySymbol = getCurrencySymbol({ symbol: currencyCode });
+        const label =
+          displaySymbol && displaySymbol !== currencyCode
+            ? `${displaySymbol} (${currencyCode})`
+            : currencyCode;
+        return {
+          value: currencyCode,
+          label,
+        };
+      }),
     [currencies],
   );
   return (

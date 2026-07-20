@@ -116,7 +116,7 @@ export const useSimpleTabFilterProps = (props: Props) => {
   const defaultTimeFilter = useDefaultTimeFilter();
 
   const isOperatorRelevant = (operator: Operators, subject: string) => {
-    const column = props.datasource.columns?.find(
+    const column = props.datasource?.columns?.find(
       col => col.column_name === subject,
     );
     const isColumnBoolean =

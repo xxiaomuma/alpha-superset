@@ -1034,7 +1034,7 @@ const FiltersConfigForm = (
                           ) || []
                         }
                         savedMetrics={datasetDetails?.metrics || []}
-                        datasource={datasetDetails}
+                        datasource={datasetDetails ?? {}}
                         onChange={(filters: AdhocFilter[]) => {
                           setNativeFilterFieldValues(form, filterId, {
                             adhoc_filters: filters,
