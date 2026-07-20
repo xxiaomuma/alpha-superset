@@ -19,7 +19,7 @@
 
 from unittest.mock import patch
 
-from superset import db, security_manager
+from superset import security_manager
 from superset.utils import json, slack  # noqa: F401
 from tests.integration_tests.base_tests import SupersetTestCase
 from tests.integration_tests.conftest import with_config, with_feature_flags
@@ -90,63 +90,3 @@ class TestUserApi(SupersetTestCase):
         mock.assert_called_once_with("admin@fab.org")
         assert response.status_code == 301
         assert response.headers["Location"] == AVATAR_URL
-
-    def test_add_user_success(self):
-        self.login(ADMIN_USERNAME)
-        gamma_role = security_manager.find_role("Gamma")
-        assert gamma_role is not None
-        username = "api_created_user"
-        payload = {
-            "username": username,
-            "password": "password123",
-            "conf_password": "password123",
-            "first_name": "Api",
-            "last_name": "User",
-            "email": "api_created_user@example.com",
-            "active": True,
-            "roles": [gamma_role.id],
-        }
-        try:
-            rv = self.client.post("/api/v1/add/user/", json=payload)
-            assert rv.status_code == 201
-            data = json.loads(rv.data.decode("utf-8"))
-            assert data["result"]["username"] == username
-            assert data["result"]["email"] == "api_created_user@example.com"
-            assert data["id"] == data["result"]["id"]
-        finally:
-            user = security_manager.find_user(username=username)
-            if user:
-                db.session.delete(user)
-                db.session.commit()
-
-    def test_add_user_password_mismatch(self):
-        self.login(ADMIN_USERNAME)
-        gamma_role = security_manager.find_role("Gamma")
-        rv = self.client.post(
-            "/api/v1/add/user/",
-            json={
-                "username": "mismatch_user",
-                "password": "password123",
-                "conf_password": "different",
-                "first_name": "A",
-                "last_name": "B",
-                "email": "mismatch@example.com",
-                "roles": [gamma_role.id],
-            },
-        )
-        assert rv.status_code == 400
-
-    def test_add_user_unauthorized(self):
-        rv = self.client.post(
-            "/api/v1/add/user/",
-            json={
-                "username": "anon_user",
-                "password": "password123",
-                "conf_password": "password123",
-                "first_name": "A",
-                "last_name": "B",
-                "email": "anon@example.com",
-                "roles": [1],
-            },
-        )
-        assert rv.status_code == 401

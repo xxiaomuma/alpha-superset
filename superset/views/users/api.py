@@ -14,30 +14,19 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import logging
-
-from flask import g, redirect, request, Response
-from flask_appbuilder.api import expose, permission_name, protect, safe
+from flask import g, redirect, Response
+from flask_appbuilder.api import expose, safe
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from marshmallow import ValidationError
 from sqlalchemy.orm.exc import NoResultFound
 
 from superset import app, is_feature_enabled
-from superset.commands.user.create import CreateUserCommand
-from superset.commands.user.exceptions import (
-    UserCreateFailedError,
-    UserInvalidError,
-)
 from superset.daos.user import UserDAO
-from superset.extensions import event_logger
 from superset.utils.slack import get_user_avatar, SlackClientError
-from superset.views.base_api import BaseSupersetApi, requires_json, statsd_metrics
-from superset.views.users.schemas import UserCreateSchema, UserResponseSchema
+from superset.views.base_api import BaseSupersetApi
+from superset.views.users.schemas import UserResponseSchema
 from superset.views.utils import bootstrap_user_data
 
-logger = logging.getLogger(__name__)
 user_response_schema = UserResponseSchema()
-user_create_schema = UserCreateSchema()
 
 
 class CurrentUserRestApi(BaseSupersetApi):
@@ -108,82 +97,6 @@ class CurrentUserRestApi(BaseSupersetApi):
             return self.response_401()
         user = bootstrap_user_data(g.user, include_perms=True)
         return self.response(200, result=user)
-
-
-class AddUserRestApi(BaseSupersetApi):
-    """API to create users (aligned with /users/add form)."""
-
-    resource_name = "add"
-    allow_browser_login = True
-    class_permission_name = "UserDBModelView"
-    openapi_spec_tag = "User"
-    openapi_spec_component_schemas = (UserResponseSchema, UserCreateSchema)
-
-    @expose("/user/", methods=("POST",))
-    @protect()
-    @safe
-    @statsd_metrics
-    @permission_name("add")
-    @event_logger.log_this_with_context(
-        action=lambda self, *args, **kwargs: f"{self.__class__.__name__}.post",
-        log_to_statsd=False,
-    )
-    @requires_json
-    def post(self) -> Response:
-        """Create a new user.
-        ---
-        post:
-          summary: Create a user
-          description: >-
-            Create a new user. Body fields align with the /users/add form.
-          requestBody:
-            required: true
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/UserCreateSchema'
-          responses:
-            201:
-              description: User created
-              content:
-                application/json:
-                  schema:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      result:
-                        $ref: '#/components/schemas/UserResponseSchema'
-            400:
-              $ref: '#/components/responses/400'
-            401:
-              $ref: '#/components/responses/401'
-            403:
-              $ref: '#/components/responses/403'
-            422:
-              $ref: '#/components/responses/422'
-            500:
-              $ref: '#/components/responses/500'
-        """
-        try:
-            item = user_create_schema.load(request.json)
-        except ValidationError as error:
-            return self.response_400(message=error.messages)
-
-        item.pop("conf_password", None)
-
-        try:
-            user = CreateUserCommand(item).run()
-            return self.response(
-                201,
-                id=user.id,
-                result=user_response_schema.dump(user),
-            )
-        except UserInvalidError as ex:
-            return self.response_422(message=ex.normalized_messages())
-        except UserCreateFailedError as ex:
-            logger.error("Error creating user %s: %s", item.get("username"), str(ex))
-            return self.response_422(message=str(ex))
 
 
 class UserRestApi(BaseSupersetApi):
