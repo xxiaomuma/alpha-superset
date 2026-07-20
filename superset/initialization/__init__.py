@@ -184,7 +184,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         )
         from superset.views.sqllab import SqllabView
         from superset.views.tags import TagModelView, TagView
-        from superset.views.users.api import CurrentUserRestApi, UserRestApi
+        from superset.views.users.api import AddUserRestApi, CurrentUserRestApi, UserRestApi
 
         set_app_error_handlers(self.superset_app)
 
@@ -201,6 +201,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_api(ChartDataRestApi)
         appbuilder.add_api(CssTemplateRestApi)
         appbuilder.add_api(CurrentUserRestApi)
+        appbuilder.add_api(AddUserRestApi)
         appbuilder.add_api(UserRestApi)
         appbuilder.add_api(DashboardFilterStateRestApi)
         appbuilder.add_api(DashboardPermalinkRestApi)
