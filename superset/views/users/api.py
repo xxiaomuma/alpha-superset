@@ -116,6 +116,8 @@ class AddUserRestApi(BaseSupersetApi):
     resource_name = "add"
     # JWT only — browser session cookie is not accepted
     allow_browser_login = False
+    # JWT clients do not send CSRF cookies/tokens
+    csrf_exempt = True
     class_permission_name = "UserDBModelView"
     openapi_spec_tag = "User"
     openapi_spec_component_schemas = (UserResponseSchema, UserCreateSchema)
