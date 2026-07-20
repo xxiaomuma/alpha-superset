@@ -14,15 +14,42 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from marshmallow import Schema
-from marshmallow.fields import Boolean, Integer, String
+from marshmallow import fields, Schema, validates_schema, ValidationError
 
 
 class UserResponseSchema(Schema):
-    id = Integer()
-    username = String()
-    email = String()
-    first_name = String()
-    last_name = String()
-    is_active = Boolean()
-    is_anonymous = Boolean()
+    id = fields.Integer()
+    username = fields.String()
+    email = fields.String()
+    first_name = fields.String()
+    last_name = fields.String()
+    is_active = fields.Boolean()
+    is_anonymous = fields.Boolean()
+
+
+class UserCreateSchema(Schema):
+    """Request body for creating a user (aligned with /users/add)."""
+
+    username = fields.String(required=True, metadata={"description": "Username"})
+    password = fields.String(required=True, metadata={"description": "Password"})
+    conf_password = fields.String(
+        required=True, metadata={"description": "Password confirmation"}
+    )
+    first_name = fields.String(required=True, metadata={"description": "First name"})
+    last_name = fields.String(required=True, metadata={"description": "Last name"})
+    email = fields.Email(required=True, metadata={"description": "Email"})
+    active = fields.Boolean(
+        load_default=True, metadata={"description": "Whether the user is active"}
+    )
+    roles = fields.List(
+        fields.Integer(),
+        required=True,
+        metadata={"description": "List of role ids"},
+    )
+
+    @validates_schema
+    def validate_passwords_match(self, data: dict, **kwargs: object) -> None:
+        if data.get("password") != data.get("conf_password"):
+            raise ValidationError(
+                {"conf_password": ["Passwords do not match"]},
+            )

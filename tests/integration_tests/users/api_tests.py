@@ -19,7 +19,7 @@
 
 from unittest.mock import patch
 
-from superset import security_manager
+from superset import db, security_manager
 from superset.utils import json, slack  # noqa: F401
 from tests.integration_tests.base_tests import SupersetTestCase
 from tests.integration_tests.conftest import with_config, with_feature_flags
@@ -27,6 +27,7 @@ from tests.integration_tests.constants import ADMIN_USERNAME
 
 meUri = "/api/v1/me/"  # noqa: N816
 AVATAR_URL = "/internal/avatar.png"
+ADD_USER_URI = "/api/v1/add/user"
 
 
 class TestCurrentUserApi(SupersetTestCase):
@@ -90,3 +91,86 @@ class TestUserApi(SupersetTestCase):
         mock.assert_called_once_with("admin@fab.org")
         assert response.status_code == 301
         assert response.headers["Location"] == AVATAR_URL
+
+
+class TestAddUserApi(SupersetTestCase):
+    def _get_access_token(self) -> str:
+        rv = self.client.post(
+            "/api/v1/security/login",
+            json={
+                "username": ADMIN_USERNAME,
+                "password": "general",
+                "provider": "db",
+            },
+        )
+        assert rv.status_code == 200
+        return rv.json["access_token"]
+
+    def _auth_headers(self, token: str) -> dict[str, str]:
+        return {"Authorization": f"Bearer {token}"}
+
+    def test_add_user_success(self):
+        token = self._get_access_token()
+        gamma_role = security_manager.find_role("Gamma")
+        assert gamma_role is not None
+        username = "api_created_user"
+        payload = {
+            "username": username,
+            "password": "password123",
+            "conf_password": "password123",
+            "first_name": "Api",
+            "last_name": "User",
+            "email": "api_created_user@example.com",
+            "active": True,
+            "roles": [gamma_role.id],
+        }
+        try:
+            rv = self.client.post(
+                ADD_USER_URI,
+                json=payload,
+                headers=self._auth_headers(token),
+            )
+            assert rv.status_code == 201
+            data = json.loads(rv.data.decode("utf-8"))
+            assert data["result"]["username"] == username
+            assert data["result"]["email"] == "api_created_user@example.com"
+            assert data["id"] == data["result"]["id"]
+        finally:
+            user = security_manager.find_user(username=username)
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+
+    def test_add_user_requires_token(self):
+        gamma_role = security_manager.find_role("Gamma")
+        rv = self.client.post(
+            ADD_USER_URI,
+            json={
+                "username": "no_token_user",
+                "password": "password123",
+                "conf_password": "password123",
+                "first_name": "A",
+                "last_name": "B",
+                "email": "no_token@example.com",
+                "roles": [gamma_role.id],
+            },
+        )
+        assert rv.status_code == 401
+
+    def test_add_user_password_mismatch(self):
+        token = self._get_access_token()
+        gamma_role = security_manager.find_role("Gamma")
+        rv = self.client.post(
+            ADD_USER_URI,
+            json={
+                "username": "mismatch_user",
+                "password": "password123",
+                "conf_password": "different",
+                "first_name": "A",
+                "last_name": "B",
+                "email": "mismatch@example.com",
+                "roles": [gamma_role.id],
+            },
+            headers=self._auth_headers(token),
+        )
+        assert rv.status_code == 400
