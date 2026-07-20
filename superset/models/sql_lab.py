@@ -29,7 +29,6 @@ from flask import current_app
 from flask_appbuilder import Model
 from flask_appbuilder.models.decorators import renders
 from flask_babel import gettext as __
-from humanize import naturaltime
 from jinja2.exceptions import TemplateError
 from markupsafe import Markup
 from sqlalchemy import (
@@ -59,6 +58,7 @@ from superset.models.helpers import (
 from superset.sql_parse import CtasMethod, extract_tables_from_jinja_sql, Table
 from superset.sqllab.limiting_factor import LimitingFactor
 from superset.utils import json
+from superset.utils.humanize_utils import localized_naturaltime
 from superset.utils.core import (
     get_column_name,
     LongText,
@@ -463,11 +463,11 @@ class SavedQuery(
 
     @property
     def last_run_humanized(self) -> str:
-        return naturaltime(datetime.now() - self.changed_on)
+        return localized_naturaltime(datetime.now() - self.changed_on)
 
     @property
     def _last_run_delta_humanized(self) -> str:
-        return naturaltime(datetime.now() - self.changed_on)
+        return localized_naturaltime(datetime.now() - self.changed_on)
 
     @renders("changed_on")
     def last_run_delta_humanized(self) -> str:

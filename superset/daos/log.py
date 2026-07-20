@@ -17,7 +17,6 @@
 from datetime import datetime, timedelta
 from typing import Any
 
-import humanize
 from sqlalchemy import and_, or_
 from sqlalchemy.sql import functions as func
 
@@ -28,6 +27,7 @@ from superset.models.dashboard import Dashboard
 from superset.models.slice import Slice
 from superset.utils.core import get_user_id
 from superset.utils.dates import datetime_to_epoch
+from superset.utils.humanize_utils import localized_naturaltime
 
 
 class LogDAO(BaseDAO[Log]):
@@ -141,7 +141,7 @@ class LogDAO(BaseDAO[Log]):
                     "item_url": item_url,
                     "item_title": item_title,
                     "time": datetime_to_epoch(log.dttm),
-                    "time_delta_humanized": humanize.naturaltime(
+                    "time_delta_humanized": localized_naturaltime(
                         datetime.utcnow() - log.dttm
                     ),
                 }

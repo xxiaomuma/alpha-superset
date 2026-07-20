@@ -27,7 +27,6 @@ from datetime import datetime, timedelta
 from typing import Any, cast, NamedTuple, Optional, TYPE_CHECKING, Union
 
 import dateutil.parser
-import humanize
 import numpy as np
 import pandas as pd
 import pytz
@@ -94,6 +93,7 @@ from superset.utils.core import (
     remove_duplicates,
 )
 from superset.utils.dates import datetime_to_epoch
+from superset.utils.humanize_utils import localized_naturaltime
 
 if TYPE_CHECKING:
     from superset.connectors.sqla.models import SqlMetric, TableColumn
@@ -556,11 +556,11 @@ class AuditMixinNullable(AuditMixin):
 
     @property
     def changed_on_humanized(self) -> str:
-        return humanize.naturaltime(datetime.now() - self.changed_on)
+        return localized_naturaltime(datetime.now() - self.changed_on)
 
     @property
     def created_on_humanized(self) -> str:
-        return humanize.naturaltime(datetime.now() - self.created_on)
+        return localized_naturaltime(datetime.now() - self.created_on)
 
     @renders("changed_on")
     def modified(self) -> Markup:
