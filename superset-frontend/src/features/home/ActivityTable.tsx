@@ -99,6 +99,17 @@ const getEntityUrl = (entity: ActivityObject) => {
 };
 
 const getEntityLastActionOn = (entity: ActivityObject) => {
+  // Prefer backend-localized relative times when present (matches Dashboard cards)
+  if ('time_delta_humanized' in entity && entity.time_delta_humanized) {
+    return t('Viewed %s', entity.time_delta_humanized);
+  }
+  if (
+    'changed_on_delta_humanized' in entity &&
+    entity.changed_on_delta_humanized
+  ) {
+    return t('Modified %s', entity.changed_on_delta_humanized);
+  }
+
   if ('time' in entity) {
     return t('Viewed %s', extendedDayjs(entity.time).fromNow());
   }

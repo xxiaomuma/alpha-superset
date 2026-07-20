@@ -27,6 +27,8 @@ import duration from 'dayjs/plugin/duration';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-tw';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -41,6 +43,28 @@ dayjs.extend(isSameOrBefore);
 dayjs.updateLocale('en', {
   invalidDate: 'Invalid date',
 });
+
+/** Map Flask-Babel locale codes to dayjs locale names. */
+const DAYJS_LOCALE_MAP: Record<string, string> = {
+  zh: 'zh-cn',
+  zh_CN: 'zh-cn',
+  zh_TW: 'zh-tw',
+  pt_BR: 'pt-br',
+};
+
+/**
+ * Activate dayjs locale from a Flask-Babel locale (e.g. "zh" → "zh-cn").
+ * Without this, relativeTime (fromNow) stays in English.
+ */
+export function configureDayjsLocale(babelLocale?: string | null): void {
+  if (!babelLocale) {
+    return;
+  }
+  const mapped =
+    DAYJS_LOCALE_MAP[babelLocale] ||
+    babelLocale.toLowerCase().replace(/_/g, '-');
+  dayjs.locale(mapped);
+}
 
 export const extendedDayjs = dayjs;
 

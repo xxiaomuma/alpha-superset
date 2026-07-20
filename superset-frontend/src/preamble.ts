@@ -18,7 +18,6 @@
  */
 import { setConfig as setHotLoaderConfig } from 'react-hot-loader';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-import dayjs from 'dayjs';
 // eslint-disable-next-line no-restricted-imports
 import {
   configure,
@@ -33,6 +32,7 @@ import setupFormatters from './setup/setupFormatters';
 import setupDashboardComponents from './setup/setupDashboardComponents';
 import { User } from './types/bootstrapTypes';
 import getBootstrapData from './utils/getBootstrapData';
+import { configureDayjsLocale } from './utils/dates';
 
 if (process.env.WEBPACK_MODE === 'development') {
   setHotLoaderConfig({ logLevel: 'debug', trackTailUpdates: false });
@@ -44,7 +44,7 @@ const bootstrapData = getBootstrapData();
 // Configure translation
 if (typeof window !== 'undefined') {
   configure({ languagePack: bootstrapData.common.language_pack });
-  dayjs.locale(bootstrapData.common.locale);
+  configureDayjsLocale(bootstrapData.common.locale);
 } else {
   configure();
 }

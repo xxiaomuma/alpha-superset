@@ -23,7 +23,15 @@ import {
   epochTimeXDaysAgo,
   epochTimeXYearsAgo,
   extendedDayjs,
+  configureDayjsLocale,
 } from 'src/utils/dates';
+
+describe('configureDayjsLocale', () => {
+  it('maps zh to zh-cn for relativeTime', () => {
+    configureDayjsLocale('zh');
+    expect(extendedDayjs.locale()).toBe('zh-cn');
+  });
+});
 
 describe('extendedDayjs', () => {
   it('returns dayjs object with extended methods', () => {

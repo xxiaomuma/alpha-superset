@@ -18,10 +18,10 @@
  */
 
 import { Locale } from 'antd-v5/es/locale';
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ExplorePageState } from 'src/explore/types';
+import { configureDayjsLocale } from 'src/utils/dates';
 import 'dayjs/locale/en';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/es';
@@ -73,7 +73,7 @@ export const useLocale = (): Locale | undefined | null => {
         LOCALE_MAPPING[localFromFlaskBabel as keyof typeof LOCALE_MAPPING]()
           .then((locale: { default: Locale }) => {
             setDatePickerLocale(locale.default);
-            dayjs.locale(localFromFlaskBabel);
+            configureDayjsLocale(localFromFlaskBabel);
           })
           .catch(() => setDatePickerLocale(undefined));
       } else {
