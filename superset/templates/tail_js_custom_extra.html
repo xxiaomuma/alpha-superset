@@ -18,8 +18,85 @@
 #}
 
 {#
-  This file may be overridden in your custom deployment.
-  It will be included in every view in superset and is a
-  good place to include your custom frontend code, such as
-  scripts to initialize google analytics, intercom, segment, etc.
+  Translate English dayjs/humanize relative times in the SPA when locale is zh.
+  Needed until the frontend bundle is rebuilt with configureDayjsLocale.
 #}
+<script>
+(function () {
+  function getLocale() {
+    try {
+      var app = document.getElementById('app');
+      var raw = app && app.getAttribute('data-bootstrap');
+      if (!raw) return '';
+      var data = JSON.parse(raw);
+      return (data.common && data.common.locale) || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  var locale = getLocale();
+  if (locale !== 'zh' && locale.indexOf('zh') !== 0) {
+    return;
+  }
+
+  var rules = [
+    [/\ba few seconds ago\b/gi, '几秒前'],
+    [/\ba minute ago\b/gi, '1分钟前'],
+    [/\ban hour ago\b/gi, '1小时前'],
+    [/\ba day ago\b/gi, '1天前'],
+    [/\ba month ago\b/gi, '1个月前'],
+    [/\ba year ago\b/gi, '1年前'],
+    [/\b(\d+)\s+seconds?\s+ago\b/gi, '$1秒前'],
+    [/\b(\d+)\s+minutes?\s+ago\b/gi, '$1分钟前'],
+    [/\b(\d+)\s+hours?\s+ago\b/gi, '$1小时前'],
+    [/\b(\d+)\s+days?\s+ago\b/gi, '$1天前'],
+    [/\b(\d+)\s+months?\s+ago\b/gi, '$1个月前'],
+    [/\b(\d+)\s+years?\s+ago\b/gi, '$1年前'],
+  ];
+
+  function translateText(text) {
+    if (!text || text.indexOf('ago') === -1) {
+      return text;
+    }
+    var next = text;
+    for (var i = 0; i < rules.length; i += 1) {
+      next = next.replace(rules[i][0], rules[i][1]);
+    }
+    return next;
+  }
+
+  function walk(root) {
+    if (!root) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var value = node.nodeValue;
+      var translated = translateText(value);
+      if (translated !== value) {
+        node.nodeValue = translated;
+      }
+    }
+  }
+
+  var scheduled = false;
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(function () {
+      scheduled = false;
+      walk(document.body);
+    });
+  }
+
+  if (document.body) {
+    schedule();
+  } else {
+    document.addEventListener('DOMContentLoaded', schedule);
+  }
+  new MutationObserver(schedule).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+})();
+</script>

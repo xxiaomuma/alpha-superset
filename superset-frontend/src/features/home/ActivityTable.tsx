@@ -17,7 +17,7 @@
  * under the License.
  */
 import { useEffect, useState } from 'react';
-import { extendedDayjs } from 'src/utils/dates';
+import { extendedDayjs, configureDayjsLocale } from 'src/utils/dates';
 import { styled, t } from '@superset-ui/core';
 import { setItem, LocalStorageKeys } from 'src/utils/localStorageHelpers';
 import { Link } from 'react-router-dom';
@@ -31,9 +31,13 @@ import {
 } from 'src/views/CRUD/utils';
 import { Chart } from 'src/types/Chart';
 import Icons from 'src/components/Icons';
+import getBootstrapData from 'src/utils/getBootstrapData';
 import SubMenu from './SubMenu';
 import EmptyState from './EmptyState';
 import { WelcomeTable, RecentActivity } from './types';
+
+// Ensure dayjs relativeTime uses zh-cn (Flask locale is "zh", dayjs needs "zh-cn")
+configureDayjsLocale(getBootstrapData()?.common?.locale);
 
 interface RecentSlice extends RecentActivity {
   item_type: 'slice';
@@ -99,13 +103,20 @@ const getEntityUrl = (entity: ActivityObject) => {
 };
 
 const getEntityLastActionOn = (entity: ActivityObject) => {
-  // Prefer backend-localized relative times when present (matches Dashboard cards)
-  if ('time_delta_humanized' in entity && entity.time_delta_humanized) {
+  // Prefer backend-localized relative times when present (and not English fallback)
+  const isEnglishRelative = (s: string) => /\bago\b/i.test(s) || /\bin\s+\d/i.test(s);
+
+  if (
+    'time_delta_humanized' in entity &&
+    entity.time_delta_humanized &&
+    !isEnglishRelative(entity.time_delta_humanized)
+  ) {
     return t('Viewed %s', entity.time_delta_humanized);
   }
   if (
     'changed_on_delta_humanized' in entity &&
-    entity.changed_on_delta_humanized
+    entity.changed_on_delta_humanized &&
+    !isEnglishRelative(entity.changed_on_delta_humanized)
   ) {
     return t('Modified %s', entity.changed_on_delta_humanized);
   }
