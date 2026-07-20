@@ -48,9 +48,9 @@ class CreateUserCommand(BaseCommand):
         self.validate()
         user = security_manager.add_user(
             username=self._properties["username"],
-            first_name=self._properties["first_name"],
-            last_name=self._properties["last_name"],
-            email=self._properties["email"],
+            first_name=self._properties.get("first_name") or "",
+            last_name=self._properties.get("last_name") or "",
+            email=self._properties.get("email") or "",
             role=self._roles,
             password=self._properties["password"],
         )
@@ -64,12 +64,12 @@ class CreateUserCommand(BaseCommand):
     def validate(self) -> None:
         exceptions: list[ValidationError] = []
         username = self._properties["username"]
-        email = self._properties["email"]
+        email = self._properties.get("email") or ""
 
         if security_manager.find_user(username=username):
             exceptions.append(UserExistsValidationError())
 
-        if security_manager.find_user(email=email):
+        if email and security_manager.find_user(email=email):
             exceptions.append(UserEmailExistsValidationError())
 
         try:

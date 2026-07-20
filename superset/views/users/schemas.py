@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from marshmallow import fields, Schema, validates_schema, ValidationError
+from marshmallow import fields, Schema, validate, validates_schema, ValidationError
 
 
 class UserResponseSchema(Schema):
@@ -35,9 +35,21 @@ class UserCreateSchema(Schema):
     conf_password = fields.String(
         required=True, metadata={"description": "Password confirmation"}
     )
-    first_name = fields.String(required=True, metadata={"description": "First name"})
-    last_name = fields.String(required=True, metadata={"description": "Last name"})
-    email = fields.Email(required=True, metadata={"description": "Email"})
+    first_name = fields.String(
+        load_default="",
+        allow_none=True,
+        metadata={"description": "First name (optional)"},
+    )
+    last_name = fields.String(
+        load_default="",
+        allow_none=True,
+        metadata={"description": "Last name (optional)"},
+    )
+    email = fields.String(
+        load_default="",
+        allow_none=True,
+        metadata={"description": "Email (optional)"},
+    )
     active = fields.Boolean(
         load_default=True, metadata={"description": "Whether the user is active"}
     )
@@ -53,3 +65,12 @@ class UserCreateSchema(Schema):
             raise ValidationError(
                 {"conf_password": ["Passwords do not match"]},
             )
+        data["first_name"] = data.get("first_name") or ""
+        data["last_name"] = data.get("last_name") or ""
+        data["email"] = data.get("email") or ""
+        if data["email"]:
+            try:
+                validate.Email()(data["email"])
+            except ValidationError as ex:
+                raise ValidationError({"email": list(ex.messages)}) from ex
+
