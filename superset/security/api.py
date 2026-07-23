@@ -21,6 +21,8 @@ from flask import current_app, request, Response
 from flask_appbuilder import expose
 from flask_appbuilder.api import safe
 from flask_appbuilder.security.decorators import permission_name, protect
+from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+from flask_login import login_user
 from flask_wtf.csrf import generate_csrf
 from marshmallow import EXCLUDE, fields, post_load, Schema, ValidationError
 
@@ -30,6 +32,10 @@ from superset.commands.dashboard.embedded.exceptions import (
 from superset.exceptions import SupersetGenericErrorException
 from superset.extensions import event_logger
 from superset.security.guest_token import GuestTokenResourceType
+from superset.utils.jwt_session_login import (
+    resolve_session_login_redirect,
+    UnsafeRedirectError,
+)
 from superset.views.base_api import BaseSupersetApi, statsd_metrics
 
 logger = logging.getLogger(__name__)
@@ -172,3 +178,88 @@ class SecurityRestApi(BaseSupersetApi):
             return self.response_400(message=error.message)
         except ValidationError as error:
             return self.response_400(message=error.messages)
+
+    @expose("/session", methods=("POST",))
+    @event_logger.log_this
+    @safe
+    @statsd_metrics
+    def create_session(self) -> Response:
+        """Exchange a JWT access token for a Flask browser session cookie.
+        ---
+        post:
+          summary: Create a browser session from JWT
+          description: >-
+            Validates the Bearer access_token from /api/v1/security/login,
+            establishes a Flask-Login session (Set-Cookie), and returns a
+            safe relative redirect path for the SPA.
+          parameters:
+          - in: header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+            description: Bearer access_token
+          requestBody:
+            required: false
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    redirect:
+                      type: string
+                      description: Same-origin relative path (e.g. /alpha/welcome/)
+          responses:
+            200:
+              description: Session cookie set
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      redirect:
+                        type: string
+            400:
+              $ref: '#/components/responses/400'
+            401:
+              $ref: '#/components/responses/401'
+            404:
+              $ref: '#/components/responses/404'
+        """
+        try:
+            verify_jwt_in_request()
+        except Exception:  # pylint: disable=broad-except
+            return self.response_401()
+
+        identity = get_jwt_identity()
+        security_manager = self.appbuilder.sm
+        user = None
+        try:
+            user = security_manager.load_user(identity)
+        except Exception:  # pylint: disable=broad-except
+            user = None
+        if user is None and identity is not None:
+            try:
+                user = security_manager.load_user(int(identity))
+            except (TypeError, ValueError, Exception):  # pylint: disable=broad-except
+                user = security_manager.find_user(username=str(identity))
+
+        if user is None or getattr(user, "is_anonymous", False):
+            return self.response_404()
+        if hasattr(user, "active") and not user.active:
+            return self.response_401()
+
+        login_user(user, remember=False)
+
+        requested = None
+        if request.is_json and isinstance(request.json, dict):
+            requested = request.json.get("redirect")
+        if requested is None:
+            requested = request.args.get("redirect")
+
+        try:
+            redirect_path = resolve_session_login_redirect(requested)
+        except UnsafeRedirectError:
+            return self.response_400(message="Invalid redirect path")
+
+        return self.response(200, redirect=redirect_path)

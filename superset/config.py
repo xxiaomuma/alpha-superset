@@ -319,6 +319,11 @@ APP_ICON = "/static/assets/images/alpha-log.png"
 # or you can specify a full URL e.g. 'https://foo.bar'
 LOGO_TARGET_PATH = None
 
+# After JWT → session bridge (POST /api/v1/security/session), redirect here
+# when the client does not pass a safe relative ``redirect`` path.
+# Falls back to URL_TOKEN_LOGIN_REDIRECT / LOGO_TARGET_PATH / /alpha/welcome/
+JWT_SESSION_LOGIN_REDIRECT = None
+
 # Specify tooltip that should appear when hovering over the App Icon/Logo
 LOGO_TOOLTIP = "供应链数据分析"
 
