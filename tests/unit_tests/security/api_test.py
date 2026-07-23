@@ -31,5 +31,6 @@ def test_csrf_not_exempt(app_context: None) -> None:
     assert {blueprint.name for blueprint in csrf._exempt_blueprints} == {
         "MenuApi",
         "SecurityApi",
+        "SecurityRestApi",
         "OpenApi",
     }

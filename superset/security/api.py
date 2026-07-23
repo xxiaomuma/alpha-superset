@@ -88,6 +88,8 @@ guest_token_create_schema = GuestTokenCreateSchema()
 class SecurityRestApi(BaseSupersetApi):
     resource_name = "security"
     allow_browser_login = True
+    # JWT clients (login → /session) do not send CSRF cookies/tokens
+    csrf_exempt = True
     openapi_spec_tag = "Security"
 
     @expose("/csrf_token/", methods=("GET",))
