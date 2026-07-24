@@ -50,10 +50,12 @@ def _view_menu_str(self: ViewMenu) -> str:
 
 def _permission_view_str(self: PermissionView) -> str:
     if self.permission and self.view_menu:
-        return (
-            f"{translate_permission_name(self.permission.name)}"
-            f" on {translate_view_menu_name(self.view_menu.name)}"
-        )
+        from flask_babel import gettext
+
+        return gettext("%(permission)s on %(view)s") % {
+            "permission": translate_permission_name(self.permission.name),
+            "view": translate_view_menu_name(self.view_menu.name),
+        }
     return repr(self)
 
 

@@ -119,7 +119,7 @@ msgid " to mark a column as a time column"
 msgstr ""
 
 msgid " to open SQL Lab. From there you can save the query as a dataset."
-msgstr "然后打开SQL工具箱。在那里你可以将查询保存为一个数据集。"
+msgstr "然后打开 SQL 工具箱。在那里你可以将查询保存为一个数据集。"
 
 msgid " to visualize your data."
 msgstr ""
@@ -854,9 +854,8 @@ msgstr "新增注释层"
 msgid "Add an item"
 msgstr "新增一行"
 
-#, fuzzy
 msgid "Add and edit filters"
-msgstr "范围过滤"
+msgstr "添加和编辑筛选器"
 
 msgid "Add annotation"
 msgstr "新增注释"
@@ -2159,9 +2158,8 @@ msgstr "时间热力图"
 msgid "Can not move top level tab into nested tabs"
 msgstr "无法将顶级选项卡移动到嵌套选项卡中"
 
-#, fuzzy
 msgid "Can select multiple values"
-msgstr "允许选择多个值"
+msgstr "可多选"
 
 msgid "Can't have overlap between Series and Breakdowns"
 msgstr "Series 和 Breakdown 之间不能有重叠"
@@ -2956,9 +2954,8 @@ msgstr "配置"
 msgid "Configure Advanced Time Range "
 msgstr "配置进阶时间范围"
 
-#, fuzzy
 msgid "Configure Time Range: Current..."
-msgstr "配置时间范围：最近..."
+msgstr "配置时间范围：当前…"
 
 msgid "Configure Time Range: Last..."
 msgstr "配置时间范围：最近..."
@@ -2992,7 +2989,7 @@ msgid "Connect"
 msgstr "连接"
 
 msgid "Connect Google Sheet"
-msgstr ""
+msgstr "连接 Google Sheet"
 
 msgid "Connect Google Sheets as tables to this database"
 msgstr "将Google Sheet作为表格连接到此数据库"
@@ -3085,9 +3082,8 @@ msgstr "%s 的副本"
 msgid "Copy partition query to clipboard"
 msgstr "将分区查询复制到剪贴板"
 
-#, fuzzy
 msgid "Copy permalink to clipboard"
-msgstr "将查询链接复制到剪贴板"
+msgstr "复制永久链接到剪贴板"
 
 msgid "Copy query URL"
 msgstr "复制查询URL"
@@ -3203,7 +3199,6 @@ msgstr ""
 msgid "Create dataframe index"
 msgstr "Dataframe索引"
 
-#, fuzzy
 msgid "Create dataset"
 msgstr "创建数据集"
 
@@ -3278,29 +3273,23 @@ msgstr "货币前缀或后缀"
 msgid "Currency symbol"
 msgstr "货币符号"
 
-#, fuzzy
 msgid "Current"
-msgstr "货币"
+msgstr "当前"
 
-#, fuzzy
 msgid "Current day"
-msgstr "货币"
+msgstr "当天"
 
-#, fuzzy
 msgid "Current month"
-msgstr "货币符号"
+msgstr "本月"
 
-#, fuzzy
 msgid "Current quarter"
-msgstr "运行查询"
+msgstr "本季度"
 
-#, fuzzy
 msgid "Current week"
-msgstr "运行查询"
+msgstr "本周"
 
-#, fuzzy
 msgid "Current year"
-msgstr "货币"
+msgstr "今年"
 
 #, python-format
 msgid "Currently rendered: %s"
@@ -3677,7 +3666,7 @@ msgstr "数据集"
 msgid ""
 "Datasets can be created from database tables or SQL queries. Select a "
 "database table to the left or "
-msgstr "数据集可以基于数据库表或SQL查询创建。请在左侧选择一个数据库表或者"
+msgstr "数据集可以基于数据库表或 SQL 查询创建。请在左侧选择一个数据库表，或者"
 
 msgid ""
 "Datasets can have a main temporal column (main_dttm_col), but can also have "
@@ -4229,7 +4218,6 @@ msgstr "圆环圈"
 msgid "Dotted"
 msgstr "点线"
 
-#, fuzzy
 msgid "Download"
 msgstr "下载"
 
@@ -4732,7 +4720,7 @@ msgid "Equal Date Sizes"
 msgstr "相同的日期大小"
 
 msgid "Equal to (=)"
-msgstr "等于（=）"
+msgstr "等于 (=)"
 
 msgid "Error"
 msgstr "错误"
@@ -5152,16 +5140,14 @@ msgstr "填充"
 msgid "Filter"
 msgstr "过滤器"
 
-#, fuzzy
 msgid "Filter Configuration"
-msgstr "过滤配置"
+msgstr "筛选配置"
 
 msgid "Filter List"
 msgstr "过滤列表"
 
-#, fuzzy
 msgid "Filter Settings"
-msgstr "过滤器设置"
+msgstr "筛选设置"
 
 msgid "Filter Type"
 msgstr "过滤类型"
@@ -5193,9 +5179,8 @@ msgstr "过滤类型"
 msgid "Filter value (case sensitive)"
 msgstr "过滤值（区分大小写）"
 
-#, fuzzy
 msgid "Filter value is required"
-msgstr "过滤器制是必须的"
+msgstr "筛选值必填"
 
 msgid "Filter value list cannot be empty"
 msgstr "过滤器值列表不能为空"
@@ -5480,13 +5465,11 @@ msgstr "图表布局"
 msgid "Gravity"
 msgstr "重力"
 
-#, fuzzy
 msgid "Greater or equal (>=)"
-msgstr "大于等于(>=)"
+msgstr "大于等于 (>=)"
 
-#, fuzzy
 msgid "Greater than (>)"
-msgstr "大于（>）"
+msgstr "大于 (>)"
 
 msgid "Green for increase, red for decrease"
 msgstr ""
@@ -5772,9 +5755,8 @@ msgid ""
 " there is no guarantee that all events for each entity are returned."
 msgstr "很重要！如果表尚未按实体ID排序，则选择此项，否则无法保证返回每个实体的所有事件。"
 
-#, fuzzy
 msgid "In"
-msgstr ""
+msgstr "包含于 (In)"
 
 msgid "Include Series"
 msgstr "包含系列"
@@ -6271,12 +6253,11 @@ msgstr "图例类型"
 msgid "Legend type"
 msgstr "图例类型"
 
-#, fuzzy
 msgid "Less or equal (<=)"
 msgstr "小于等于 (<=)"
 
 msgid "Less than (<)"
-msgstr "小于（<）"
+msgstr "小于 (<)"
 
 msgid "Lift percent precision"
 msgstr "提升百分比精度"
@@ -7006,9 +6987,8 @@ msgstr "新增图表"
 msgid "New columns added: %s"
 msgstr "新增的列：%s"
 
-#, fuzzy
 msgid "New dataset"
-msgstr "新数据集"
+msgstr "新建数据集"
 
 #, fuzzy
 msgid "New dataset name"
@@ -7279,13 +7259,11 @@ msgstr "没有可用信息"
 msgid "Not defined"
 msgstr "未定义"
 
-#, fuzzy
 msgid "Not equal to (≠)"
-msgstr "不等于（≠）"
+msgstr "不等于 (≠)"
 
-#, fuzzy
 msgid "Not in"
-msgstr "Not In"
+msgstr "不包含于 (Not in)"
 
 msgid "Not null"
 msgstr "非空"
@@ -8858,7 +8836,7 @@ msgid "SQL expression"
 msgstr "SQL表达式"
 
 msgid "SQL query"
-msgstr "SQL查询"
+msgstr "SQL 查询"
 
 msgid "SQLAlchemy URI"
 msgstr "SQLAlchemy URI"
@@ -9367,9 +9345,8 @@ msgstr "选择看板"
 msgid "Select database"
 msgstr "删除数据库"
 
-#, fuzzy
 msgid "Select database or type to search databases"
-msgstr "选择数据库或输入名称来搜索"
+msgstr "选择数据库或输入搜索"
 
 msgid ""
 "Select databases require additional fields to be completed in the Advanced "
@@ -9377,7 +9354,6 @@ msgid ""
 "databases has "
 msgstr "选择数据库需要在高级选项中完成额外的字段才能成功连接数据库。了解您的数据库需要什么："
 
-#, fuzzy
 msgid "Select dataset source"
 msgstr "选择数据源"
 
@@ -9439,9 +9415,8 @@ msgstr "选择已保存指标"
 msgid "Select saved queries"
 msgstr "选择已保存查询"
 
-#, fuzzy
 msgid "Select schema or type to search schemas"
-msgstr "选择模式或输入模式名称来搜索"
+msgstr "选择模式或输入搜索"
 
 msgid "Select scheme"
 msgstr "选择方案"
@@ -9449,9 +9424,8 @@ msgstr "选择方案"
 msgid "Select subject"
 msgstr "选择主题"
 
-#, fuzzy
 msgid "Select table or type to search tables"
-msgstr "选择表或输入表名来搜索"
+msgstr "选择表或输入搜索"
 
 #, fuzzy
 msgid "Select the Annotation Layer you would like to use."
@@ -9591,9 +9565,8 @@ msgstr "分享"
 msgid "Share chart by email"
 msgstr "通过电子邮件分享图表"
 
-#, fuzzy
 msgid "Share permalink by email"
-msgstr "通过电子邮件分享链接"
+msgstr "通过邮件分享永久链接"
 
 msgid "Shared query"
 msgstr "已分享的查询"
@@ -12233,16 +12206,15 @@ msgid "Upload"
 msgstr "上传"
 
 msgid "Upload CSV"
-msgstr "上传CSV"
+msgstr "上传 CSV"
 
 msgid "Upload CSV to database"
-msgstr "上传CSV文件"
+msgstr "上传 CSV 到数据库"
 
 #, fuzzy
 msgid "Upload Columnar"
 msgstr "上传列式文件"
 
-#, fuzzy
 msgid "Upload Columnar file to database"
 msgstr "上传列式文件到数据库"
 
@@ -12256,9 +12228,8 @@ msgstr "已启用上传"
 msgid "Upload Excel"
 msgstr "上传Excel"
 
-#, fuzzy
 msgid "Upload Excel to database"
-msgstr "上传Excel"
+msgstr "上传 Excel 到数据库"
 
 msgid "Upload JSON file"
 msgstr "上传JSON文件"
@@ -13642,9 +13613,8 @@ msgstr "创建"
 msgid "create a new chart"
 msgstr "创建新图表"
 
-#, fuzzy
 msgid "create dataset from SQL query"
-msgstr "从SQL查询创建数据集"
+msgstr "从 SQL 查询创建数据集"
 
 #, fuzzy
 msgid "crontab"
@@ -14785,3 +14755,33 @@ msgstr "每页显示条数"
 
 msgid "Add or edit filters"
 msgstr "添加或编辑筛选器"
+
+msgid "Add Filter"
+msgstr "添加筛选器"
+
+msgid "Add Divider"
+msgstr "添加分隔线"
+
+msgid "Upload CSV file"
+msgstr "上传 CSV 文件"
+
+msgid "ReportSchedule"
+msgstr "报告计划"
+
+msgid "SavedQuery"
+msgstr "已保存查询"
+
+msgid "CssTemplate"
+msgstr "CSS 模板"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "UserDBModelView"
+msgstr "用户"
+
+msgid "DynamicPlugin"
+msgstr "动态插件"
+
+msgid "%(permission)s on %(view)s"
+msgstr "%(permission)s 于 %(view)s"
