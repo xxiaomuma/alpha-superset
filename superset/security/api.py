@@ -17,12 +17,11 @@
 import logging
 from typing import Any
 
-from flask import current_app, request, Response
+from flask import current_app, redirect, request, Response
 from flask_appbuilder import expose
 from flask_appbuilder.api import safe
 from flask_appbuilder.security.decorators import permission_name, protect
-from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
-from flask_login import login_user
+from flask_jwt_extended import decode_token, get_jwt_identity, verify_jwt_in_request
 from flask_wtf.csrf import generate_csrf
 from marshmallow import EXCLUDE, fields, post_load, Schema, ValidationError
 
@@ -33,8 +32,12 @@ from superset.exceptions import SupersetGenericErrorException
 from superset.extensions import event_logger
 from superset.security.guest_token import GuestTokenResourceType
 from superset.utils.jwt_session_login import (
+    establish_session_from_identity,
     resolve_session_login_redirect,
+    SessionLoginError,
+    UnauthorizedSessionLogin,
     UnsafeRedirectError,
+    UserNotFoundSessionLogin,
 )
 from superset.views.base_api import BaseSupersetApi, statsd_metrics
 
@@ -194,6 +197,7 @@ class SecurityRestApi(BaseSupersetApi):
             Validates the Bearer access_token from /api/v1/security/login,
             establishes a Flask-Login session (Set-Cookie), and returns a
             safe relative redirect path for the SPA.
+            On plain HTTP cross-origin, prefer GET /session/redirect instead.
           parameters:
           - in: header
             name: Authorization
@@ -233,35 +237,82 @@ class SecurityRestApi(BaseSupersetApi):
         except Exception:  # pylint: disable=broad-except
             return self.response_401()
 
-        identity = get_jwt_identity()
-        security_manager = self.appbuilder.sm
-        user = None
         try:
-            user = security_manager.load_user(identity)
-        except Exception:  # pylint: disable=broad-except
-            user = None
-        if user is None and identity is not None:
-            try:
-                user = security_manager.load_user(int(identity))
-            except (TypeError, ValueError, Exception):  # pylint: disable=broad-except
-                user = security_manager.find_user(username=str(identity))
-
-        if user is None or getattr(user, "is_anonymous", False):
-            return self.response_404()
-        if hasattr(user, "active") and not user.active:
-            return self.response_401()
-
-        login_user(user, remember=False)
-
-        requested = None
-        if request.is_json and isinstance(request.json, dict):
-            requested = request.json.get("redirect")
-        if requested is None:
-            requested = request.args.get("redirect")
-
-        try:
+            establish_session_from_identity(
+                self.appbuilder.sm, get_jwt_identity()
+            )
+            requested = None
+            if request.is_json and isinstance(request.json, dict):
+                requested = request.json.get("redirect")
+            if requested is None:
+                requested = request.args.get("redirect")
             redirect_path = resolve_session_login_redirect(requested)
         except UnsafeRedirectError:
             return self.response_400(message="Invalid redirect path")
+        except UserNotFoundSessionLogin:
+            return self.response_404()
+        except UnauthorizedSessionLogin:
+            return self.response_401()
+        except SessionLoginError as ex:
+            return self.response_400(message=str(ex))
 
         return self.response(200, redirect=redirect_path)
+
+    @expose("/session/redirect", methods=("GET",))
+    @event_logger.log_this
+    @safe
+    @statsd_metrics
+    def create_session_redirect(self) -> Response:
+        """HTTP-friendly auto-login via top-level browser navigation.
+        ---
+        get:
+          summary: Create session from JWT query token and redirect
+          description: >-
+            For plain HTTP / cross-origin portals: navigate the browser here
+            with ?token=<access_token>. Sets a SameSite=Lax session cookie
+            (works without HTTPS) then redirects into the app.
+          parameters:
+          - in: query
+            name: token
+            required: true
+            schema:
+              type: string
+            description: access_token from /api/v1/security/login
+          - in: query
+            name: redirect
+            required: false
+            schema:
+              type: string
+            description: Relative path after login (default /alpha/welcome/)
+          responses:
+            302:
+              description: Session cookie set; redirect to app
+            400:
+              $ref: '#/components/responses/400'
+            401:
+              $ref: '#/components/responses/401'
+            404:
+              $ref: '#/components/responses/404'
+        """
+        token = (request.args.get("token") or "").strip()
+        if not token:
+            return self.response_401()
+
+        try:
+            decoded = decode_token(token)
+            identity = decoded.get("sub")
+            establish_session_from_identity(self.appbuilder.sm, identity)
+            redirect_path = resolve_session_login_redirect(
+                request.args.get("redirect")
+            )
+        except UnsafeRedirectError:
+            return self.response_400(message="Invalid redirect path")
+        except UserNotFoundSessionLogin:
+            return self.response_404()
+        except UnauthorizedSessionLogin:
+            return self.response_401()
+        except Exception:  # pylint: disable=broad-except
+            logger.exception("JWT session redirect login failed")
+            return self.response_401()
+
+        return redirect(redirect_path)

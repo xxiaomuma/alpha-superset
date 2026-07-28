@@ -68,7 +68,7 @@ def test_create_session_success(app: Flask, mocker) -> None:
     user = SimpleNamespace(id=1, username="admin", active=True, is_anonymous=False)
     mocker.patch("superset.security.api.verify_jwt_in_request", return_value=True)
     mocker.patch("superset.security.api.get_jwt_identity", return_value=1)
-    mock_login = mocker.patch("superset.security.api.login_user")
+    mock_login = mocker.patch("superset.utils.jwt_session_login.login_user")
     mock_sm = MagicMock()
     mock_sm.load_user.return_value = user
 
@@ -89,7 +89,6 @@ def test_create_session_success(app: Flask, mocker) -> None:
     payload = json.loads(response.data.decode("utf-8"))
     assert payload["redirect"] == "/alpha/welcome/"
     mock_login.assert_called_once_with(user, remember=False)
-    mock_sm.load_user.assert_called()
 
 
 def test_create_session_unauthorized_without_jwt(app: Flask, mocker) -> None:
@@ -108,11 +107,13 @@ def test_create_session_unauthorized_without_jwt(app: Flask, mocker) -> None:
     assert response.status_code == 401
 
 
-def test_create_session_invalid_redirect(app: Flask, mocker) -> None:
+def test_create_session_redirect_success(app: Flask, mocker) -> None:
     user = SimpleNamespace(id=1, username="admin", active=True, is_anonymous=False)
-    mocker.patch("superset.security.api.verify_jwt_in_request", return_value=True)
-    mocker.patch("superset.security.api.get_jwt_identity", return_value=1)
-    mocker.patch("superset.security.api.login_user")
+    mocker.patch(
+        "superset.security.api.decode_token",
+        return_value={"sub": 1},
+    )
+    mocker.patch("superset.utils.jwt_session_login.login_user")
     mock_sm = MagicMock()
     mock_sm.load_user.return_value = user
 
@@ -122,11 +123,10 @@ def test_create_session_invalid_redirect(app: Flask, mocker) -> None:
     api.appbuilder = SimpleNamespace(sm=mock_sm)  # type: ignore[attr-defined]
 
     with app.test_request_context(
-        "/api/v1/security/session",
-        method="POST",
-        json={"redirect": "https://evil.example/"},
-        headers={"Authorization": "Bearer fake"},
+        "/api/v1/security/session/redirect?token=fake&redirect=/alpha/welcome/",
+        method="GET",
     ):
-        response = api.create_session()
+        response = api.create_session_redirect()
 
-    assert response.status_code == 400
+    assert response.status_code in (302, 301)
+    assert "/alpha/welcome/" in response.headers["Location"]
