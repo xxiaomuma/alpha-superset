@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import base64
+import json
 import logging
 from typing import Any
 
@@ -238,8 +240,12 @@ class SecurityRestApi(BaseSupersetApi):
             return self.response_401()
 
         try:
-            jwt_data = get_jwt()
-            rls_rules = jwt_data.get("rls_rules")
+            header_rls = request.headers.get("X-RLS-Rules")
+            if header_rls:
+                rls_rules = json.loads(base64.b64decode(header_rls).decode("utf-8"))
+            else:
+                jwt_data = get_jwt()
+                rls_rules = jwt_data.get("rls_rules")
             establish_session_from_identity(
                 self.appbuilder.sm, get_jwt_identity(), rls_rules
             )
@@ -303,7 +309,11 @@ class SecurityRestApi(BaseSupersetApi):
         try:
             decoded = decode_token(token)
             identity = decoded.get("sub")
-            rls_rules = decoded.get("rls_rules")
+            rls_rules_param = request.args.get("rls_rules")
+            if rls_rules_param:
+                rls_rules = json.loads(base64.b64decode(rls_rules_param).decode("utf-8"))
+            else:
+                rls_rules = decoded.get("rls_rules")
             establish_session_from_identity(self.appbuilder.sm, identity, rls_rules)
             redirect_path = resolve_session_login_redirect(
                 request.args.get("redirect")
