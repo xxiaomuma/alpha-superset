@@ -31,6 +31,7 @@ import dateutil.parser
 import numpy as np
 import pandas as pd
 import sqlalchemy as sa
+from flask import g
 from flask_appbuilder import Model
 from flask_appbuilder.security.sqla.models import User
 from flask_babel import gettext as __, lazy_gettext as _
@@ -752,6 +753,17 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
                         f"({template_processor.process_template(rule['clause'])})"
                     )
                     all_filters.append(clause)
+
+            # Apply dynamic RLS from JWT/session (第三方登录)
+            user = g.user if hasattr(g, "user") else None
+            if user and hasattr(user, "_dynamic_rls") and user._dynamic_rls:
+                for rule in user._dynamic_rls:
+                    dataset_id = rule.get("dataset")
+                    if dataset_id is None or dataset_id == self.id:
+                        clause = self.text(
+                            f"({template_processor.process_template(rule['clause'])})"
+                        )
+                        all_filters.append(clause)
 
             grouped_filters = [or_(*clauses) for clauses in filter_groups.values()]
             all_filters.extend(grouped_filters)

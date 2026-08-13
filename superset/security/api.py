@@ -21,7 +21,7 @@ from flask import current_app, redirect, request, Response
 from flask_appbuilder import expose
 from flask_appbuilder.api import safe
 from flask_appbuilder.security.decorators import permission_name, protect
-from flask_jwt_extended import decode_token, get_jwt_identity, verify_jwt_in_request
+from flask_jwt_extended import decode_token, get_jwt, get_jwt_identity, verify_jwt_in_request
 from flask_wtf.csrf import generate_csrf
 from marshmallow import EXCLUDE, fields, post_load, Schema, ValidationError
 
@@ -238,8 +238,10 @@ class SecurityRestApi(BaseSupersetApi):
             return self.response_401()
 
         try:
+            jwt_data = get_jwt()
+            rls_rules = jwt_data.get("rls_rules")
             establish_session_from_identity(
-                self.appbuilder.sm, get_jwt_identity()
+                self.appbuilder.sm, get_jwt_identity(), rls_rules
             )
             requested = None
             if request.is_json and isinstance(request.json, dict):
@@ -301,7 +303,8 @@ class SecurityRestApi(BaseSupersetApi):
         try:
             decoded = decode_token(token)
             identity = decoded.get("sub")
-            establish_session_from_identity(self.appbuilder.sm, identity)
+            rls_rules = decoded.get("rls_rules")
+            establish_session_from_identity(self.appbuilder.sm, identity, rls_rules)
             redirect_path = resolve_session_login_redirect(
                 request.args.get("redirect")
             )

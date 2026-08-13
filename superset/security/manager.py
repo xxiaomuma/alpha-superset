@@ -103,6 +103,14 @@ class DatabaseCatalogSchema(NamedTuple):
     schema: str
 
 
+class _DynamicRlsFilter(NamedTuple):
+    """A lightweight object representing a dynamic RLS filter from JWT."""
+
+    id: int
+    group_key: Optional[str]
+    clause: str
+
+
 class SupersetSecurityListWidget(ListWidget):  # pylint: disable=too-few-public-methods
     """
     Redeclaring to avoid circular imports
@@ -2510,7 +2518,32 @@ class SupersetSecurityManager(  # pylint: disable=too-many-public-methods
                 )
             )
         )
-        return query.all()
+        db_filters = query.all()
+
+        # Merge dynamic RLS rules from JWT session login
+        dynamic_rls = getattr(g.user, "_dynamic_rls", None)
+        if dynamic_rls:
+            dynamic_filters = []
+            for i, rule in enumerate(dynamic_rls):
+                if isinstance(rule, dict) and "clause" in rule:
+                    clause = rule["clause"]
+                    group_key = rule.get("group_key")
+                elif hasattr(rule, "clause"):
+                    clause = rule.clause
+                    group_key = getattr(rule, "group_key", None)
+                else:
+                    continue
+                # Use negative IDs for dynamic filters to avoid collision with DB IDs
+                dynamic_filters.append(
+                    _DynamicRlsFilter(
+                        id=-(i + 1),
+                        group_key=group_key,
+                        clause=clause,
+                    )
+                )
+            db_filters = list(db_filters) + dynamic_filters
+
+        return db_filters
 
     def get_rls_sorted(self, table: "BaseDatasource") -> list["RowLevelSecurityFilter"]:
         """
