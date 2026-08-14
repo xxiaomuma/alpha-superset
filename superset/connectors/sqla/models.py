@@ -755,10 +755,13 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
                     all_filters.append(clause)
 
             # Apply dynamic RLS from JWT/session (第三方登录)
-            user = g.user if hasattr(g, "user") else None
+            import logging
+            from flask_login import current_user
+            user = current_user if current_user and not current_user.is_anonymous else None
+            if not user and hasattr(g, "user"):
+                user = g.user
             if user and hasattr(user, "_dynamic_rls") and user._dynamic_rls:
-                import logging
-                logging.warning(f"[RLS DEBUG] applying _dynamic_rls: {user._dynamic_rls}")
+                logging.warning(f"[RLS DEBUG] applying _dynamic_rls on user {user.id}: {user._dynamic_rls}")
                 for rule in user._dynamic_rls:
                     dataset_id = rule.get("dataset")
                     if dataset_id is None or dataset_id == self.id:
