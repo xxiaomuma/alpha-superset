@@ -314,6 +314,7 @@ class SecurityRestApi(BaseSupersetApi):
                 rls_rules = json.loads(base64.urlsafe_b64decode(rls_rules_param).decode("utf-8"))
             else:
                 rls_rules = decoded.get("rls_rules")
+            logger.warning(f"[RLS DEBUG] session/redirect - identity: {identity}, rls_rules: {rls_rules}, has_rls_rules_param: {bool(rls_rules_param)}")
             establish_session_from_identity(self.appbuilder.sm, identity, rls_rules)
             redirect_path = resolve_session_login_redirect(
                 request.args.get("redirect")
