@@ -99,17 +99,7 @@ def establish_session_from_identity(
     security_manager: Any, identity: Any, rls_rules: list | None = None
 ) -> Any:
     """Validate identity, create Flask-Login session, return the user."""
-    # #region agent log
-    with open("debug-7d8189.log", "a") as f:
-        import datetime
-        f.write(f'{{"sessionId":"7d8189","id":"log_{datetime.datetime.now().timestamp()}","timestamp":{int(datetime.datetime.now().timestamp()*1000)},"location":"jwt_session_login.py:102","message":"establish_session_from_identity called","data":{{"identity":identity,"rls_rules_type":type(rls_rules).__name__,"rls_rules":rls_rules}},"runId":"debug","hypothesisId":"A"}}\\n')
-    # #endregion
     user = load_user_from_jwt_identity(security_manager, identity)
-    # #region agent log
-    with open("debug-7d8189.log", "a") as f:
-        import datetime
-        f.write(f'{{"sessionId":"7d8189","id":"log_{datetime.datetime.now().timestamp()}","timestamp":{int(datetime.datetime.now().timestamp()*1000)},"location":"jwt_session_login.py:103","message":"load_user_from_jwt_identity result","data":{{"user":user,"is_anonymous":getattr(user,"is_anonymous",None) if user else None}},"runId":"debug","hypothesisId":"A"}}\\n')
-    # #endregion
     if user is None or getattr(user, "is_anonymous", False):
         raise UserNotFoundSessionLogin("user not found")
     if hasattr(user, "active") and not user.active:
