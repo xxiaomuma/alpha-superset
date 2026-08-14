@@ -242,7 +242,7 @@ class SecurityRestApi(BaseSupersetApi):
         try:
             header_rls = request.headers.get("X-RLS-Rules")
             if header_rls:
-                rls_rules = json.loads(base64.b64decode(header_rls).decode("utf-8"))
+                rls_rules = json.loads(base64.urlsafe_b64decode(header_rls).decode("utf-8"))
             else:
                 jwt_data = get_jwt()
                 rls_rules = jwt_data.get("rls_rules")
@@ -311,9 +311,14 @@ class SecurityRestApi(BaseSupersetApi):
             identity = decoded.get("sub")
             rls_rules_param = request.args.get("rls_rules")
             if rls_rules_param:
-                rls_rules = json.loads(base64.b64decode(rls_rules_param).decode("utf-8"))
+                rls_rules = json.loads(base64.urlsafe_b64decode(rls_rules_param).decode("utf-8"))
             else:
                 rls_rules = decoded.get("rls_rules")
+            # #region agent log
+            with open("debug-7d8189.log", "a") as f:
+                import datetime
+                f.write(f'{{"sessionId":"7d8189","id":"log_{datetime.datetime.now().timestamp()}","timestamp":{int(datetime.datetime.now().timestamp()*1000)},"location":"api.py:318","message":"Session redirect success","data":{{"identity":identity,"rls_rules":rls_rules}},"runId":"debug","hypothesisId":"A"}}\\n')
+            # #endregion
             establish_session_from_identity(self.appbuilder.sm, identity, rls_rules)
             redirect_path = resolve_session_login_redirect(
                 request.args.get("redirect")
@@ -324,7 +329,12 @@ class SecurityRestApi(BaseSupersetApi):
             return self.response_404()
         except UnauthorizedSessionLogin:
             return self.response_401()
-        except Exception:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
+            # #region agent log
+            with open("debug-7d8189.log", "a") as f:
+                import datetime
+                f.write(f'{{"sessionId":"7d8189","id":"log_{datetime.datetime.now().timestamp()}","timestamp":{int(datetime.datetime.now().timestamp()*1000)},"location":"api.py:335","message":"JWT session redirect failed","data":{{"error_type":"{type(e).__name__}","error":str(e)}},"runId":"debug","hypothesisId":"A"}}\\n')
+            # #endregion
             logger.exception("JWT session redirect login failed")
             return self.response_401()
 
