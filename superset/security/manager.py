@@ -2521,7 +2521,7 @@ class SupersetSecurityManager(  # pylint: disable=too-many-public-methods
         db_filters = query.all()
 
         # Merge dynamic RLS rules from JWT session login
-        dynamic_rls = getattr(g.user, "_dynamic_rls", None)
+        dynamic_rls = getattr(g, "_dynamic_rls", None)
         if dynamic_rls:
             dynamic_filters = []
             for i, rule in enumerate(dynamic_rls):
