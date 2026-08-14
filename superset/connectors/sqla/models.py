@@ -757,6 +757,8 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
             # Apply dynamic RLS from JWT/session (第三方登录)
             user = g.user if hasattr(g, "user") else None
             if user and hasattr(user, "_dynamic_rls") and user._dynamic_rls:
+                import logging
+                logging.warning(f"[RLS DEBUG] applying _dynamic_rls: {user._dynamic_rls}")
                 for rule in user._dynamic_rls:
                     dataset_id = rule.get("dataset")
                     if dataset_id is None or dataset_id == self.id:

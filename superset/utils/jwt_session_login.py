@@ -107,4 +107,6 @@ def establish_session_from_identity(
     login_user(user, remember=False)
     if rls_rules:
         user._dynamic_rls = rls_rules
+        import logging
+        logging.warning(f"[RLS DEBUG] set _dynamic_rls on user {identity}: {rls_rules}")
     return user
