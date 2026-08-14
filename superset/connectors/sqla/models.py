@@ -756,10 +756,12 @@ class BaseDatasource(AuditMixinNullable, ImportExportMixin):  # pylint: disable=
 
             # Apply dynamic RLS from JWT/session (第三方登录)
             import logging
-            from flask import g as flask_g
+            from flask import g as flask_g, session as flask_session
+            if not hasattr(flask_g, "_dynamic_rls"):
+                flask_g._dynamic_rls = flask_session.get("_dynamic_rls")
             dynamic_rls = getattr(flask_g, "_dynamic_rls", None)
             logging.warning(
-                f"[RLS DEBUG] g._dynamic_rls: {dynamic_rls}"
+                f"[RLS DEBUG] g._dynamic_rls: {dynamic_rls}, from_session: {flask_session.get('_dynamic_rls')}"
             )
             if dynamic_rls:
                 logging.warning(f"[RLS DEBUG] applying _dynamic_rls: {dynamic_rls}")

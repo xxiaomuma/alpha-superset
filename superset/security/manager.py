@@ -2521,6 +2521,9 @@ class SupersetSecurityManager(  # pylint: disable=too-many-public-methods
         db_filters = query.all()
 
         # Merge dynamic RLS rules from JWT session login
+        from flask import session as flask_session
+        if not hasattr(g, "_dynamic_rls"):
+            g._dynamic_rls = flask_session.get("_dynamic_rls")
         dynamic_rls = getattr(g, "_dynamic_rls", None)
         if dynamic_rls:
             dynamic_filters = []
