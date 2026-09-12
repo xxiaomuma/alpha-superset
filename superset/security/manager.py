@@ -2522,9 +2522,18 @@ class SupersetSecurityManager(  # pylint: disable=too-many-public-methods
 
         # Merge dynamic RLS rules from JWT session login
         from flask import session as flask_session
-        if not hasattr(g, "_dynamic_rls"):
-            g._dynamic_rls = flask_session.get("_dynamic_rls")
-        dynamic_rls = getattr(g, "_dynamic_rls", None)
+        # 验证 session 中的 rls 规则是否是当前用户的
+        rls_user_id = flask_session.get("_dynamic_rls_user_id")
+        current_user_id = g.user.id if hasattr(g, "user") and g.user else None
+        if rls_user_id and rls_user_id != current_user_id:
+            # 用户不匹配，清空残留的规则
+            flask_session.pop("_dynamic_rls", None)
+            flask_session.pop("_dynamic_rls_user_id", None)
+            dynamic_rls = None
+        else:
+            if not hasattr(g, "_dynamic_rls"):
+                g._dynamic_rls = flask_session.get("_dynamic_rls")
+            dynamic_rls = getattr(g, "_dynamic_rls", None)
         if dynamic_rls:
             dynamic_filters = []
             for i, rule in enumerate(dynamic_rls):

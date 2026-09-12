@@ -28,6 +28,7 @@ from flask import (
     abort,
     flash,
     g,
+    session,
     get_flashed_messages,
     redirect,
     Response,
@@ -507,3 +508,10 @@ def apply_http_headers(response: Response) -> Response:
         if k not in response.headers:
             response.headers[k] = v
     return response
+
+
+@superset_appbuilder.hooks.before_logout
+def clear_dynamic_rls_on_logout() -> None:
+    """退出登录时清空 dynamic_rls"""
+    session.pop("_dynamic_rls", None)
+    session.pop("_dynamic_rls_user_id", None)

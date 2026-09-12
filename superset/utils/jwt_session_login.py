@@ -108,8 +108,10 @@ def establish_session_from_identity(
     login_user(user, remember=False)
     # 普通登录时清空 dynamic_rls，避免其他用户登录后残留
     session.pop("_dynamic_rls", None)
+    session.pop("_dynamic_rls_user_id", None)
     if rls_rules:
         session["_dynamic_rls"] = rls_rules
+        session["_dynamic_rls_user_id"] = user.id
         import logging
         logging.warning(f"[RLS DEBUG] set _dynamic_rls in session: {rls_rules}")
     return user
