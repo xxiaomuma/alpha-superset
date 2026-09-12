@@ -510,8 +510,11 @@ def apply_http_headers(response: Response) -> Response:
     return response
 
 
-@superset_appbuilder.hooks.before_logout
+@superset_app.before_request
 def clear_dynamic_rls_on_logout() -> None:
     """退出登录时清空 dynamic_rls"""
-    session.pop("_dynamic_rls", None)
-    session.pop("_dynamic_rls_user_id", None)
+    from flask import request
+    # Flask-AppBuilder logout endpoint 名称
+    if request.endpoint and "logout" in request.endpoint.lower():
+        session.pop("_dynamic_rls", None)
+        session.pop("_dynamic_rls_user_id", None)
