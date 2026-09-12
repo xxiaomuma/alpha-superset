@@ -99,16 +99,17 @@ def establish_session_from_identity(
     security_manager: Any, identity: Any, rls_rules: list | None = None
 ) -> Any:
     """Validate identity, create Flask-Login session, return the user."""
-    from flask import g, session
+    from flask import session
     user = load_user_from_jwt_identity(security_manager, identity)
     if user is None or getattr(user, "is_anonymous", False):
         raise UserNotFoundSessionLogin("user not found")
     if hasattr(user, "active") and not user.active:
         raise UnauthorizedSessionLogin("user inactive")
     login_user(user, remember=False)
+    # 普通登录时清空 dynamic_rls，避免其他用户登录后残留
+    session.pop("_dynamic_rls", None)
     if rls_rules:
         session["_dynamic_rls"] = rls_rules
-        g._dynamic_rls = rls_rules
         import logging
         logging.warning(f"[RLS DEBUG] set _dynamic_rls in session: {rls_rules}")
     return user
