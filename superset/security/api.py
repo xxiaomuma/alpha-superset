@@ -316,9 +316,8 @@ class SecurityRestApi(BaseSupersetApi):
                 rls_rules = decoded.get("rls_rules")
             logger.warning(f"[RLS DEBUG] session/redirect - identity: {identity}, rls_rules: {rls_rules}, has_rls_rules_param: {bool(rls_rules_param)}")
             establish_session_from_identity(self.appbuilder.sm, identity, rls_rules)
-            redirect_path = resolve_session_login_redirect(
-                request.args.get("redirect")
-            )
+            # 硬编码跳转到 /dashboard/list/，忽略前端传递的 redirect 参数
+            redirect_path = "/dashboard/list/"
         except UnsafeRedirectError:
             return self.response_400(message="Invalid redirect path")
         except UserNotFoundSessionLogin:
