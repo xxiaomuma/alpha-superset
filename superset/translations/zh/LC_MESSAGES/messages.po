@@ -3460,7 +3460,7 @@ msgid "Dashboard usage"
 msgstr "看板"
 
 msgid "Dashboards"
-msgstr "看板"
+msgstr "BI看板"
 
 #, fuzzy
 msgid "Dashboards could not be created."
