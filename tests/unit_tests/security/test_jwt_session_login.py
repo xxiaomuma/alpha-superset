@@ -123,10 +123,10 @@ def test_create_session_redirect_success(app: Flask, mocker) -> None:
     api.appbuilder = SimpleNamespace(sm=mock_sm)  # type: ignore[attr-defined]
 
     with app.test_request_context(
-        "/api/v1/security/session/redirect?token=fake&redirect=/alpha/welcome/",
+        "/api/v1/security/session/redirect?token=fake&redirect=/dashboard/list/",
         method="GET",
     ):
         response = api.create_session_redirect()
 
     assert response.status_code in (302, 301)
-    assert "/alpha/welcome/" in response.headers["Location"]
+    assert "/dashboard/list/" in response.headers["Location"]

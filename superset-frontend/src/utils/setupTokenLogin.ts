@@ -38,7 +38,7 @@ export default function setupTokenLogin(): boolean {
     return false;
   }
 
-  document.cookie = `${SESSION_COOKIE_NAME}=${token}; path=/; SameSite=Lax`;
+  document.cookie = `${SESSION_COOKIE_NAME}=${token}; path=/dashboard/list/; SameSite=Lax`;
 
   params.delete(TOKEN_QUERY_PARAM);
   const remainingSearch = params.toString();
