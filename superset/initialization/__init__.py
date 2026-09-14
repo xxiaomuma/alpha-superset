@@ -699,7 +699,10 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self) -> FlaskResponse:
-        target = "/alpha/welcome/"
+        target = (
+            current_app.config.get("JWT_SESSION_LOGIN_REDIRECT")
+            or "/alpha/welcome/"
+        )
         if query_string := request.query_string.decode():
             target = f"{target}?{query_string}"
         return redirect(target)
