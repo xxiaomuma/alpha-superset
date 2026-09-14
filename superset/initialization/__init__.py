@@ -24,7 +24,7 @@ from typing import Any, Callable, TYPE_CHECKING
 
 import wtforms_json
 from deprecation import deprecated
-from flask import abort, Flask, redirect, request, session
+from flask import abort, current_app, Flask, redirect, request, session
 from flask_appbuilder import expose, IndexView
 from flask_appbuilder.api import safe
 from flask_appbuilder.utils.base import get_safe_redirect
